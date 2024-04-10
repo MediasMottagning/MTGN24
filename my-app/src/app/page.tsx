@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from './lib/firebaseConfig'; // Adjust the import path as needed
 
+
 // Function to generate an email from a username
 const generateEmailForUsername = (username: string): string => {
   return `${username}@mtgn.nu`;
