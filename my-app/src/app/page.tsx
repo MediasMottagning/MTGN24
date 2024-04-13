@@ -30,7 +30,6 @@ const Home: React.FC = () => {
 
   return (
     <main>
-      {/* Your JSX structure */}
       <form onSubmit={handleLogin}>
         <input
           className="border border-gray-300 rounded-lg p-2 text-black"

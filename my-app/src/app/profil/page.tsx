@@ -1,68 +1,81 @@
 'use client'
 
-import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useState } from 'react';
-import { db} from '../lib/firebaseConfig';
-import { collection, getDocs } from 'firebase/firestore';
+import { FormEvent, useEffect, useState } from 'react';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { getAuth } from "firebase/auth";
+import { db } from '../lib/firebaseConfig';
 import LogoutButton from "../components/LogoutBtn";
 import useAuth from "../components/useAuth";
-import { getAuth } from "firebase/auth";
 
-
-async function getCollectionData() {
-    const querySnapshot = await getDocs(collection(db, "users"));
-    querySnapshot.forEach((doc) => {
-        console.log(`${doc.id} => ${doc.data().username}`);
-    });
-}
-
-export default function Home() {
-    // check if user is logged in
+const Home = () => {
+    const [funFact, setFunFact] = useState<string>(''); // Holds the displayed fun fact
+    const [inputFact, setInputFact] = useState<string>(''); // Holds the current input from the form
     const { user } = useAuth();
-    // if user is not logged in, redirect to login page
 
-    const auth = getAuth();
-    const profile = auth.currentUser;
-    if (profile !== null) {
-        // The user object has basic properties such as display name, email, etc.
-        const displayName = profile.displayName;
-        const email = profile.email;
-        const photoURL = profile.photoURL;
-        const emailVerified = profile.emailVerified;
+    // Fetch the fun fact from the user's profile
+    useEffect(() => {
+        if (user) {
+            const fetchFunFact = async () => {
+                const userProfileRef = doc(db, "users", user.uid);
+                try {
+                    const docSnap = await getDoc(userProfileRef);
+                    if (docSnap.exists()) {
+                        const storedFact = docSnap.data().funFact || '';
+                        setFunFact(storedFact);
+                        setInputFact(storedFact);  // Set input to reflect the stored fun fact
+                    } else {
+                        console.log("No such document!");
+                    }
+                } catch (error) {
+                    console.error("Error fetching fun fact: ", error);
+                }
+            };
 
-        // The user's ID, unique to the Firebase project. Do NOT use
-        // this value to authenticate with your backend server, if
-        // you have one. Use User.getToken() instead.
-        const uid = profile.uid;
+            fetchFunFact();
+        }
+    }, [user]);
+
+    if (!user) {
+        return <h1>Please login to update your profile.</h1>;
     }
 
-    if (!user){ return <h1>Please login u dumb fuq</h1>;}
+    const updateFunFact = async (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        if (user) {
+            const userProfileRef = doc(db, "users", user.uid);
+            try {
+                await setDoc(userProfileRef, { funFact: inputFact }, { merge: true });
+                setFunFact(inputFact); // Update displayed fact only on successful submit
+                console.log("User fun fact updated!");
+                alert("Fun fact updated successfully!");
+            } catch (error) {
+                console.error("Error updating fun fact: ", error);
+                alert("Failed to update fun fact.");
+            }
+        }
+    };
+
     return (
         <main className="flex min-h-screen flex-col items-center justify-between p-24">
-            <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-                <div
-                className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-                >
-                    <h2 className={`mb-3 text-2xl font-semibold`}>
-                        {profile?.email}
-                        <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-                        -&gt;
-                        </span>
-                    </h2>
-                </div>
-
-                <div
-                className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-                >
-                    <h2 className={`mb-3 text-2xl font-semibold`}>
-                        {profile?.displayName}
-                        <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-                        -&gt;
-                        </span>
-                    </h2>
-                </div>
+            <div>
+                <h2>{user?.email}</h2>
+                <h2>{user?.displayName}</h2>
+                <h2>{funFact}</h2>
             </div>
+            <form onSubmit={updateFunFact}>
+                <input
+                    className="border border-gray-300 rounded-lg p-2 text-black"
+                    type="text"
+                    value={inputFact}
+                    onChange={(e) => setInputFact(e.target.value)}
+                    placeholder="Fun Fact"
+                    required
+                />
+                <button type="submit">Submit Fun Fact</button>
+            </form>
+            <LogoutButton />
         </main>
     );
-}
+};
+
+export default Home;
