@@ -6,4 +6,9 @@ export default function N0llanGrupper(){
     const { user }= useAuth();
     // if user is not logged in, redirect to login page
     if (!user){ return <h1>Please login u dumb fuq</h1>;}
+    return (
+        <main>
+            <div>test</div>
+        </main>
+    )
 }
