@@ -2,10 +2,10 @@
 import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from './lib/firebaseConfig'; // Adjust the import path as needed
+import { auth } from './lib/firebaseConfig'; 
 
 
-// Function to generate an email from a username
+// function to generate an email from a username to login
 const generateEmailForUsername = (username: string): string => {
   return `${username}@mtgn.nu`;
 };
@@ -13,19 +13,27 @@ const generateEmailForUsername = (username: string): string => {
 const Home: React.FC = () => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [isDisabled, setIsDisabled] = useState<boolean>(false);  // used for timeout on login button
   const router = useRouter();
 
+  // login handler
   const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsDisabled(true);
     const email = generateEmailForUsername(username);
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      // redirect to home page if login is successful
-      router.push('/home'); 
-    } catch (error: any) {
-      console.error("LOGIN ERROR: ",error.message);
-      // login error
-    }
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        // redirect to home page if login is successful
+        router.push('/home'); 
+      } catch (error: any) {
+        // login error handler
+        console.error("LOGIN ERROR: ",error.message);
+        alert("Login failed. Please try again.");
+      }
+    // re-enable login button after 2 seconds
+    setTimeout(() => {
+      setIsDisabled(false);
+    }, 2000);
   };
 
   return (
@@ -47,7 +55,7 @@ const Home: React.FC = () => {
           placeholder="Password"
           required
         />
-        <button type="submit">Login</button>
+        <button type="submit" disabled={isDisabled}>Login</button>
       </form>
     </main>
   );

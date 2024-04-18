@@ -2,17 +2,20 @@
 
 import { FormEvent, useEffect, useState } from 'react';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { getAuth } from "firebase/auth";
+import { getAuth, updatePassword } from "firebase/auth";
 import { db } from '../lib/firebaseConfig';
 import LogoutButton from "../components/LogoutBtn";
 import useAuth from "../components/useAuth";
+import { Montserrat_Alternates } from 'next/font/google';
 
 const Home = () => {
-    const [funFact, setFunFact] = useState<string>(''); // Holds the displayed fun fact
-    const [inputFact, setInputFact] = useState<string>(''); // Holds the current input from the form
+    const [funFact, setFunFact] = useState<string>(''); // displayed fun fact
+    const [inputFact, setInputFact] = useState<string>(''); //form fun fact
+    const [inputPassword, setInputPassword] = useState<string>(''); //form password
+    const [inputPassword1, setInputPassword1] = useState<string>(''); //form password 
     const { user } = useAuth();
 
-    // Fetch the fun fact from the user's profile
+    // fetch the fun fact from the users profile on firestore
     useEffect(() => {
         if (user) {
             const fetchFunFact = async () => {
@@ -22,7 +25,7 @@ const Home = () => {
                     if (docSnap.exists()) {
                         const storedFact = docSnap.data().funFact || '';
                         setFunFact(storedFact);
-                        setInputFact(storedFact);  // Set input to reflect the stored fun fact
+                        setInputFact(storedFact); 
                     } else {
                         console.log("No such document!");
                     }
@@ -34,23 +37,43 @@ const Home = () => {
             fetchFunFact();
         }
     }, [user]);
-
+    // if user is not logged in, show a message to login
     if (!user) {
         return <h1>Please login to update your profile.</h1>;
     }
-
+    // update the fun fact in the users profile on firestore from the form input
     const updateFunFact = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (user) {
             const userProfileRef = doc(db, "users", user.uid);
             try {
                 await setDoc(userProfileRef, { funFact: inputFact }, { merge: true });
-                setFunFact(inputFact); // Update displayed fact only on successful submit
+                setFunFact(inputFact); // update displayed fact 
                 console.log("User fun fact updated!");
                 alert("Fun fact updated successfully!");
             } catch (error) {
                 console.error("Error updating fun fact: ", error);
                 alert("Failed to update fun fact.");
+            }
+        }
+    };
+     // update password in the users profile on firbase auth from the form input
+     const newPassword = async (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        if (user) {
+            // check if the two passwords match
+            if (inputPassword !== inputPassword1) {
+                alert("Passwords do not match!");
+            }else{
+            updatePassword(user, inputPassword).then(() => {
+            // successful change of password
+                console.log("User password updated!");
+                alert("Password updated successfully!");
+              }).catch((error) => {
+            // error handling
+                console.error("Error updating password: ", error);
+                alert("Failed to update password. \nMake sure your password is at least 6 characters long.");
+              });
             }
         }
     };
@@ -73,7 +96,24 @@ const Home = () => {
                 />
                 <button type="submit">Submit Fun Fact</button>
             </form>
-            <LogoutButton />
+
+            <form onSubmit={newPassword}>
+                <input
+                    className="border border-gray-300 rounded-lg p-2 text-black"
+                    type="password"
+                    onChange={(e) => setInputPassword(e.target.value)}
+                    placeholder="New Password"
+                    required
+                />
+                <input
+                    className="border border-gray-300 rounded-lg p-2 text-black"
+                    type="password"
+                    onChange={(e) => setInputPassword1(e.target.value)}
+                    placeholder="Confirm New Password"
+                    required
+                />
+                <button type="submit">Change password</button>
+            </form>
         </main>
     );
 };
