@@ -1,2 +1,0 @@
-Player Name, Time Taken, Board Size
-jin, 9, 4

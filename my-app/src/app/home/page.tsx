@@ -20,7 +20,7 @@ export default function Home() {
     // check if user is logged in
     const { user }= useAuth();
     // if user is not logged in, redirect to login page
-    if (!user){ return <h1>Please login u dumb fuq</h1>;}
+    if (!user){ return <h1>Please login</h1>;}
     return (
         <main className="flex min-h-screen flex-col items-center justify-between p-24">
             <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">

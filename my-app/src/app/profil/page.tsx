@@ -12,7 +12,7 @@ const Home = () => {
     const [funFact, setFunFact] = useState<string>(''); // displayed fun fact
     const [inputFact, setInputFact] = useState<string>(''); //form fun fact
     const [inputPassword, setInputPassword] = useState<string>(''); //form password
-    const [inputPassword1, setInputPassword1] = useState<string>(''); //form password 
+    const [inputPassword1, setInputPassword1] = useState<string>(''); //form1 password, used to confirm password
     const { user } = useAuth();
 
     // fetch the fun fact from the users profile on firestore
