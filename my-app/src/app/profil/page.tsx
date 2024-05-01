@@ -1,7 +1,8 @@
-'use client'
+'use client';
 
 import { FormEvent, useEffect, useState } from 'react';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { getStorage, ref, getDownloadURL } from "firebase/storage"; // for profile pic
 import { getAuth, updatePassword } from "firebase/auth";
 import { db } from '../lib/firebaseConfig';
 import LogoutButton from "../components/LogoutBtn";
@@ -13,19 +14,37 @@ const Home = () => {
     const [inputFact, setInputFact] = useState<string>(''); //form fun fact
     const [inputPassword, setInputPassword] = useState<string>(''); //form password
     const [inputPassword1, setInputPassword1] = useState<string>(''); //form1 password, used to confirm password
+    const [profilePic, setProfilePic] = useState<string>(''); // profile pic url
     const { user } = useAuth();
 
     // fetch the fun fact from the users profile on firestore
     useEffect(() => {
         if (user) {
-            const fetchFunFact = async () => {
+            const fetchUserData = async () => {
                 const userProfileRef = doc(db, "users", user.uid);
                 try {
                     const docSnap = await getDoc(userProfileRef);
                     if (docSnap.exists()) {
-                        const storedFact = docSnap.data().funFact || '';
-                        setFunFact(storedFact);
-                        setInputFact(storedFact); 
+                        const userData = docSnap.data();
+                        // fun fact
+                        setFunFact(userData.funFact || '');
+                        setInputFact(userData.funFact || '');
+                        // profile picture
+                        const picUrl = userData.profilePic;
+                        //console.log("Profile picture URL: ", picUrl);
+                        if (picUrl) {
+                            const storage = getStorage();
+                            const picRef = ref(storage, picUrl);
+                            console.log("Profile picture ref: ", picRef);
+                            getDownloadURL(picRef)
+                                .then((url) => {
+                                    //console.log("Profile picture URL: ", url);
+                                    setProfilePic(url);
+                                })
+                                .catch((error) => {
+                                    console.error("Error fetching profile picture:", error);
+                                });
+                        }
                     } else {
                         console.log("No such document!");
                     }
@@ -34,7 +53,7 @@ const Home = () => {
                 }
             };
 
-            fetchFunFact();
+            fetchUserData();
         }
     }, [user]);
     // if user is not logged in, show a message to login
@@ -81,6 +100,8 @@ const Home = () => {
     return (
         <main className="flex min-h-screen flex-col items-center justify-between p-24">
             <div>
+                {profilePic && <img src={profilePic} alt="Profile" />}
+
                 <h2>{user?.email}</h2>
                 <h2>{user?.displayName}</h2>
                 <h2>{funFact}</h2>

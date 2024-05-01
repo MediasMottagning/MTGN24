@@ -2,7 +2,8 @@
 import { useState, FormEvent } from 'react';
 
 
-/* THIS IS A ADMIN PAGE USED TO GIVE USERS displayNames in Firebase */
+/* THIS IS A ADMIN PAGE USED TO GIVE USERS DISPLAYNAMES IN FIREBASE */
+/* Om ngn har tid och orkar: Fixa så att bara vi i webbgruppen kan accessa denna sidan */
 const UpdateUser = () => {
   const [uid, setUid] = useState('');
   const [displayName, setDisplayName] = useState('');
@@ -56,7 +57,7 @@ const UpdateUser = () => {
             required
         />
       </label>
-      <button type="submit">Update User</button>
+      <button className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30" type="submit">Update User</button>
     </form>
   );
 };
