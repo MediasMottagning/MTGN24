@@ -28,7 +28,7 @@ const Home = () => {
                         const userData = docSnap.data();
                         // fun fact
                         setFunFact(userData.funFact || '');
-                        setInputFact(userData.funFact || '');
+                        // setInputFact(userData.funFact || '');
                         // profile picture
                         const picUrl = userData.profilePic;
                         //console.log("Profile picture URL: ", picUrl);

@@ -1,5 +1,6 @@
 "use client"
 import { useState, FormEvent } from 'react';
+import useAuth from '../components/useAuth';
 
 
 /* THIS IS A ADMIN PAGE USED TO GIVE USERS DISPLAYNAMES IN FIREBASE */
@@ -7,6 +8,8 @@ import { useState, FormEvent } from 'react';
 const UpdateUser = () => {
   const [uid, setUid] = useState('');
   const [displayName, setDisplayName] = useState('');
+  const {user} = useAuth();
+  
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -33,8 +36,10 @@ const UpdateUser = () => {
       alert('Failed to update user: ' + error.message);
     }
   };
-  
-
+  // Redirect if user is not logged in or not an admin
+  if (!user){return <h1>Please login</h1>;}
+  else if(user.uid !== "u29clYYu8BZteXqa4kp74PqFEdK2"){
+    return <h1>Only admins can access this page</h1>;}
   return (
     <form onSubmit={handleSubmit}>
       <label htmlFor="uid">User ID:
