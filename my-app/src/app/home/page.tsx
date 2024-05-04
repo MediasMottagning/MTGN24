@@ -17,10 +17,10 @@ async function getCollectionData() {
 
 export default function Home() {
   // check if user is logged in
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
   // if user is not logged in, redirect to login page
-  if (loading) {
-    return <h1>Loading...</h1>;
+  if (!user) {
+    return <h1>Please login</h1>;
   }
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">

@@ -3,7 +3,11 @@ import React from 'react';
 import { getAuth, signOut } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 
-const LogoutButton: React.FC = () => {
+interface LogoutButtonProps {
+  onClose?: () => void; // prop for a function to call on logout, used to close dropdown on click
+}
+
+const LogoutButton: React.FC<LogoutButtonProps> = ({ onClose }) => {
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -11,7 +15,8 @@ const LogoutButton: React.FC = () => {
     try {
       await signOut(auth);
       console.log('User signed out');
-      router.push('/'); // Redirect to login page after logout
+      onClose?.(); 
+      router.push('/'); // redirect to login page
     } catch (error) {
       console.error('Logout Error:', error);
     }
