@@ -1,6 +1,7 @@
 "use client"; // This is a client component now?? idk what this does but makes usestate work lol
 import React, { useState } from "react";
 
+//Using drive embedd for now, not so practical for uploading its hardcoded lol and takes a while to load.
 const bandaren = () => {
   let [src, setSrc] = useState("");
   const blandareSrc = [
