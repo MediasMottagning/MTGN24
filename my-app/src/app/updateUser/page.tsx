@@ -12,6 +12,14 @@ const UpdateUser = () => {
   const [displayName, setDisplayName] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const { user } = useAuth();
+  
+
+  const isAdmin = async () => {
+    const currentUserDoc = await getDoc(doc(db, "users", user?.uid || ""));
+    const currentUserData = currentUserDoc.data();
+    console.log(currentUserData?.isAdmin);
+    return currentUserData?.isAdmin;
+  }
 
   /* function to update display names of users */
   const handleSubmitName = async (event: FormEvent) => {
@@ -82,7 +90,7 @@ const UpdateUser = () => {
   // Redirect if user is not logged in or not an admin
   if (!user) {
     return <h1>Please login</h1>;
-  } else if (!user.isAdmin) {
+  } else if (!isAdmin) {
     return <h1>Only admins can access this page</h1>;
   }
 
