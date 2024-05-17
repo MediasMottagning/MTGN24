@@ -16,6 +16,7 @@ export type Invoice = {
 export interface User {
   uid: string;
   email: string | null;
+  isAdmin: boolean;
 }
 
 // login form type
