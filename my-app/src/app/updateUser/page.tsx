@@ -52,6 +52,7 @@ const UpdateUser = () => {
     if (image && uid) {
       // Check if the current user is an admin
       //console.log(user?.uid)
+      //console.log(user?.)
       const currentUserDoc = await getDoc(doc(db, "users", user?.uid || ""));
       const currentUserData = currentUserDoc.data();
       console.log(currentUserData?.isAdmin);
@@ -81,7 +82,7 @@ const UpdateUser = () => {
   // Redirect if user is not logged in or not an admin
   if (!user) {
     return <h1>Please login</h1>;
-  } else if (user.uid !== "u29clYYu8BZteXqa4kp74PqFEdK2" && !user.isAdmin) {
+  } else if (!user.isAdmin) {
     return <h1>Only admins can access this page</h1>;
   }
 
