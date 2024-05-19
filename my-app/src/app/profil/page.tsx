@@ -29,9 +29,9 @@ const Home = () => {
                         // fun fact
                         setFunFact(userData.funFact || '');
                         // setInputFact(userData.funFact || '');
-                        // profile picture
                         const picUrl = userData.profilePic;
                         //console.log("Profile picture URL: ", picUrl);
+                        /* Get profile picture */
                         if (picUrl) {
                             const storage = getStorage();
                             const picRef = ref(storage, picUrl);
