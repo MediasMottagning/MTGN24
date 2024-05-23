@@ -53,8 +53,10 @@ const UpdateUser = () => {
       console.log('Success:', data);
       alert('User is now an admin.');
     } catch (error) {
-      console.error('Error:', error);
-      alert('Failed to set admin: ' + error.message);
+      if (error instanceof Error) {
+        console.error('Error:', error.message);
+        alert('Failed to set admin: ' + error.message);
+      }
     }
   };
   // update user display name
@@ -79,8 +81,10 @@ const UpdateUser = () => {
       console.log('Success:', data);
       alert('User updated successfully!');
     } catch (error) {
-      console.error('Error:', error);
-      alert('Failed to update user: ' + error.message);
+      if (error instanceof Error) {
+        console.error('Error:', error);
+        alert('Failed to update user: ' + error.message);
+      }
     }
   };
   // upload profile picture
@@ -101,13 +105,17 @@ const UpdateUser = () => {
             profilePic: gsUrl,
           });
         } catch (error) {
-          console.error('Error updating profile picture URL in Firestore: ', error);
-          alert('Failed to update profile picture URL in Firestore: ' + error.message);
+          if(error instanceof Error) {
+            console.error('Error updating profile picture URL in Firestore: ', error);
+            alert('Failed to update profile picture URL in Firestore: ' + error.message);
+          }
         }
         alert('Profile picture updated successfully!');
       } catch (error) {
-        console.error('Error uploading image: ', error);
-        alert('Failed to upload image: ' + error.message);
+        if(error instanceof Error){
+          console.error('Error uploading image: ', error);
+          alert('Failed to upload image: ' + error.message);
+        }
       }
     } else {
       alert('Please provide both a user ID and a profile picture.');
