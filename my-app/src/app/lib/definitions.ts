@@ -24,3 +24,10 @@ export interface LoginFormState {
   email: string;
   password: string;
 }
+
+// posts type home page
+export interface Post {
+  id: string;
+  title: string;
+  post: string;
+}

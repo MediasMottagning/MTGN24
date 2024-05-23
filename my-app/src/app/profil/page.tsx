@@ -8,6 +8,7 @@ import { db } from '../lib/firebaseConfig';
 import LogoutButton from "../components/LogoutBtn";
 import useAuth from "../components/useAuth";
 import { Montserrat_Alternates } from 'next/font/google';
+import Link from 'next/link';
 
 const Home = () => {
     const [funFact, setFunFact] = useState<string>(''); // displayed fun fact
@@ -16,6 +17,22 @@ const Home = () => {
     const [inputPassword1, setInputPassword1] = useState<string>(''); //form1 password, used to confirm password
     const [profilePic, setProfilePic] = useState<string>(''); // profile pic url
     const { user } = useAuth();
+    // admin check vars
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [loading, setLoading] = useState(true);
+    // check if user is admin
+    useEffect(() => {
+      const checkAdminStatus = async () => {
+        if (user) {
+          const currentUserDoc = await getDoc(doc(db, "users", user.uid));
+          const currentUserData = currentUserDoc.data();
+          setIsAdmin(currentUserData?.isAdmin || false);
+        }
+        setLoading(false);
+      };
+  
+      checkAdminStatus();
+    }, [user]);
 
     // fetch the fun fact from the users profile on firestore
     useEffect(() => {
@@ -29,13 +46,13 @@ const Home = () => {
                         // fun fact
                         setFunFact(userData.funFact || '');
                         // setInputFact(userData.funFact || '');
-                        // profile picture
                         const picUrl = userData.profilePic;
                         //console.log("Profile picture URL: ", picUrl);
+                        /* Get profile picture */
                         if (picUrl) {
                             const storage = getStorage();
                             const picRef = ref(storage, picUrl);
-                            console.log("Profile picture ref: ", picRef);
+                            //console.log("Profile picture ref: ", picRef);
                             getDownloadURL(picRef)
                                 .then((url) => {
                                     //console.log("Profile picture URL: ", url);
@@ -135,6 +152,9 @@ const Home = () => {
                 />
                 <button type="submit">Change password</button>
             </form>
+            {
+                isAdmin && <Link href="/updateUser">Update User</Link>
+            }
         </main>
     );
 };

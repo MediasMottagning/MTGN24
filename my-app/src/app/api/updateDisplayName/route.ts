@@ -1,7 +1,6 @@
-// src/app/api/updateDisplayName/route.ts
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import admin from '../../lib/firebaseAdmin'; // Adjust the import path as necessary
+import {admin} from '../../lib/firebaseAdmin'; 
 
 export async function POST(req: NextRequest) {
   try {
