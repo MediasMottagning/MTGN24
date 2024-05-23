@@ -1,4 +1,5 @@
 'use client'
+import { FormEvent, useEffect, useState } from 'react';
 import useAuth from "../components/useAuth";
 import { collection, getDocs } from 'firebase/firestore';
 import { db} from '../lib/firebaseConfig';
@@ -6,6 +7,8 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { getStorage, ref, getDownloadURL } from "firebase/storage"; // for profile pic
 
 export default function N0llanGrupper(){
+    
+    var userUrls = new Array();
     // check if user is logged in
     const { user }= useAuth();
     // if user is not logged in, redirect to login page
@@ -19,22 +22,32 @@ export default function N0llanGrupper(){
                     const docSnap = await getDoc(userProfileRef);
                     if(docSnap.exists()){
                         const userData = docSnap.data();
-                        console.log(userData.profilePic);
+                        const picUrl = userData.profilePic;
+                        if (picUrl) {
+                            const storage = getStorage();
+                            const picRef = ref(storage, picUrl);
+                            getDownloadURL(picRef)
+                                .then((url) => {
+                                    userUrls.push(url)
+                                    console.log(userUrls)
+                                })
+                                .catch((error) => {
+                                    console.error("Error fetching profile picture:", error);
+                                });
+                        }
                     }
-                        
                 }
                 catch{
-                    console.log("Could not fetch profile picture");
+                    console.log("Error");
                 }
         });
       }
-
-   // async function
 
     return (
         <main>
             <div>test</div>
             <button onClick={getCollectionData}>test</button>
+            
         </main>
     )
 }
