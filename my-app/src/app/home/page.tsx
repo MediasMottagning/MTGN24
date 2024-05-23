@@ -7,11 +7,15 @@ import { db} from '../lib/firebaseConfig';
 import { collection, getDocs } from 'firebase/firestore';
 import LogoutButton from "../components/LogoutBtn";
 import useAuth from "../components/useAuth";
-const gasqueImage = "/gasqueImg.png";
-
-
 import { set } from "firebase/database";
 import { Post } from "../lib/definitions";
+import EventCard from "../components/EventCard";
+
+const gasqueImage = "/gasqueImg.png";
+const clockIcon = "/clock-60.png";
+const locationIcon = "/place-60.png";
+const ticketIcon = "/ticket-48.png";
+
 
 async function getCollectionData() {
   const querySnapshot = await getDocs(collection(db, "users"));
@@ -51,18 +55,10 @@ export default function Home() {
         <main className="debug flex min-h-screen flex-col items-center">
             <div className="debug flex w-11/12 flex-col mt-3"> {/* EVENT MODULE */}
                 <p className="font-semibold">Nästa event</p>
-                <div className="flex w-full flex-row border border-black rounded-lg">
-                    <div className="flex w-1/3 relative mr-3">
-                        <Image alt="Preview image of event" src={gasqueImage} fill={true} objectFit="cover"></Image>
-                    </div>
-                    <div className="flex w-2/3 flex-col">
-                        <p className="font-semibold">Neverland Gasque</p>
-                        <p>Fredag 17-00</p>
-                        <p>META</p>
-                        <p>Kostar</p>
-                    </div>
-                </div>
-            
+                <EventCard title="Neverland Gasque"
+                            time="Fredag 18:00"
+                            location="META"
+                            costs="150 kr"/>
             </div>
             <div className="debug flex mt-3"> {/* ANNOUNCEMENTS MODULE */}
                 <p className="font-semibold">Senaste anslag</p>
