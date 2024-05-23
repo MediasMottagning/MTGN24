@@ -13,19 +13,37 @@ const UpdateUser = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   // check admin status, uses custom user claim "isAdmin" on firebase
-  useEffect(() => {
-    const checkAdminStatus = async () => {
-      if (user) {
-        const currentUserDoc = await getDoc(doc(db, "users", user.uid));
-        const currentUserData = currentUserDoc.data();
-        setIsAdmin(currentUserData?.isAdmin || false);
+  const checkAdminStatus = async () => {
+    if (user) {
+      try {
+        const response = await fetch('/api/isAdmin', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ uid: user.uid }),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          setIsAdmin(data.isAdmin);
+        } else {
+          console.error('Failed to check admin status:', data.error);
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          console.error('Error:', error.message);
+        }
       }
       setLoading(false);
-    };
+    }
+  };
 
+  useEffect(() => {
     checkAdminStatus();
   }, [user]);
 
+  // image change handler
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setImage(e.target.files[0]);
@@ -121,6 +139,7 @@ const UpdateUser = () => {
       alert('Please provide both a user ID and a profile picture.');
     }
   };
+  checkAdminStatus();
 
   if (loading) {
     return <h1>Loading...</h1>;
