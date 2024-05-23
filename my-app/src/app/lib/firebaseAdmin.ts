@@ -1,15 +1,27 @@
-// lib/firebaseAdmin.ts
 import admin from 'firebase-admin';
 
-const serviceAccount = require('../../../serviceAccountKey.json');
+// error handling for missing environment variables
+const projectId = process.env.FIREBASE_PROJECT_ID;
+const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
+const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
+
+if (!projectId || !clientEmail || !privateKey) {
+  throw new Error("Missing Firebase configuration environment variables");
+}
 
 if (!admin.apps.length) {
   admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
+    credential: admin.credential.cert({
+      projectId,
+      clientEmail,
+      privateKey,
+    }),
   });
 }
 
 const auth = admin.auth();
 const adb = admin.firestore();
+const storage = admin.storage();
 
-export { auth, adb, admin}
+// export admin.firestore and admin.auth
+export { auth, adb, storage };

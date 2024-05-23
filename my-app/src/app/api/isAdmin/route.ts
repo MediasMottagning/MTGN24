@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '../../lib/firebaseAdmin';
 
+/* API endpoint to check custom claim if user is admin */
 export async function POST(req: NextRequest) {
   const authHeader = req.headers.get('Authorization');
   if (!authHeader) {
