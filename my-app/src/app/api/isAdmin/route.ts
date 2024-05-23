@@ -2,14 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '../../lib/firebaseAdmin';
 
 export async function POST(req: NextRequest) {
-  const { uid } = await req.json();
+  const authHeader = req.headers.get('Authorization');
+  if (!authHeader) {
+    return NextResponse.json({ error: 'No token provided' }, { status: 401 });
+  }
+
+  const idToken = authHeader.split('Bearer ')[1];
 
   try {
-    // Retrieve the user record by UID
-    const user = await auth.getUser(uid);
-
-    // Get custom claims
-    const claims = user.customClaims;
+    const decodedToken = await auth.verifyIdToken(idToken);
+    const claims = decodedToken;
 
     if (claims && claims.isAdmin) {
       return NextResponse.json({ isAdmin: true });

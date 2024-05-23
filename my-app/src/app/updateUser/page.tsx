@@ -4,6 +4,8 @@ import useAuth from '../components/useAuth';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { storage, db } from '../lib/firebaseConfig';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { set } from 'firebase/database';
 
 const UpdateUser = () => {
   const [uid, setUid] = useState('');
@@ -13,31 +15,35 @@ const UpdateUser = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   // check admin status, uses custom user claim "isAdmin" on firebase
-  const checkAdminStatus = async () => {
-    if (user) {
-      try {
-        const response = await fetch('/api/isAdmin', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ uid: user.uid }),
-        });
 
-        const data = await response.json();
-        if (response.ok) {
+  const checkAdminStatus = async () => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const idToken = await user.getIdToken();
+        try {
+          const response = await fetch('/api/isAdmin', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${idToken}`,
+            },
+            body: JSON.stringify({ uid: user.uid }),
+          });
+          const data = await response.json();
+          //console.log('Admin status:', data.isAdmin);
           setIsAdmin(data.isAdmin);
-        } else {
-          console.error('Failed to check admin status:', data.error);
-        }
-      } catch (error) {
-        if (error instanceof Error) {
-          console.error('Error:', error.message);
+          setLoading(false);
+
+        } catch (error) {
+          if (error instanceof Error) {
+            console.error('Error:', error.message);
+          }
         }
       }
-      setLoading(false);
-    }
+    });
   };
+  
 
   useEffect(() => {
     checkAdminStatus();
