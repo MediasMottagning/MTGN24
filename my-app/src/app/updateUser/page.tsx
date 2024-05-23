@@ -12,7 +12,7 @@ const UpdateUser = () => {
   const { user } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
-
+  // check admin status, uses custom user claim "isAdmin" on firebase
   useEffect(() => {
     const checkAdminStatus = async () => {
       if (user) {
@@ -31,7 +31,7 @@ const UpdateUser = () => {
       setImage(e.target.files[0]);
     }
   };
-
+  // set user as admin
   const setAdmin = async (event: FormEvent) => {
     event.preventDefault();
     try {
@@ -57,7 +57,7 @@ const UpdateUser = () => {
       alert('Failed to set admin: ' + error.message);
     }
   };
-
+  // update user display name
   const handleSubmitName = async (event: FormEvent) => {
     event.preventDefault();
     try {
@@ -83,7 +83,7 @@ const UpdateUser = () => {
       alert('Failed to update user: ' + error.message);
     }
   };
-
+  // upload profile picture
   const handleUpload = async (event: FormEvent) => {
     event.preventDefault();
     if (image && uid) {
