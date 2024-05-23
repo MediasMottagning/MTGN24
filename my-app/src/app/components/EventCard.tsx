@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 
-const gasqueImage = "/gasqueImg.png";
+const lokeImage = "/Loke_i_Dubrovnik.png";
 const clockIcon = "/clock-60.png";
 const locationIcon = "/place-60.png";
 const ticketIcon = "/ticket-48.png";
@@ -11,7 +11,7 @@ export default function EventCard(params:any) {
     return (
         <div className="flex w-full flex-row border border-black rounded-lg">
             <div className="flex w-1/3 relative mr-1">
-                <Image alt="Preview image of event" src={gasqueImage} fill={true} objectFit="cover" className="rounded-l-md"></Image>
+                <Image alt="Preview image of event" src={params.image || lokeImage} fill={true} objectFit="cover" className="rounded-l-md"></Image>
             </div>
             <div className="flex w-2/3 flex-col space-y-1 p-1">
                 <p className="font-semibold">{params.title || "Event title"}</p>
