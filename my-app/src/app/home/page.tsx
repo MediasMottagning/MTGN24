@@ -7,13 +7,7 @@ import { db} from '../lib/firebaseConfig';
 import { collection, getDocs } from 'firebase/firestore';
 import LogoutButton from "../components/LogoutBtn";
 import useAuth from "../components/useAuth";
-
-async function getCollectionData() {
-  const querySnapshot = await getDocs(collection(db, "users"));
-  querySnapshot.forEach((doc) => {
-    console.log(`${doc.id} => ${doc.data().username}`);
-  });
-}
+const gasqueImage = "/gasqueImg.png";
 
 
 export default function Home() {
@@ -22,39 +16,24 @@ export default function Home() {
     // if user is not logged in, redirect to login page
     if (!user){ return <h1>Please login</h1>;}
     return (
-        <main className="flex min-h-screen flex-col items-center justify-between p-24">
-            <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-                <button
-                onClick={getCollectionData}
-                className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-                >
-                <h2 className={`mb-3 text-2xl font-semibold`}>
-                    Print shit{" "}
-                    <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-                    -&gt;
-                    </span>
-                </h2>
-                <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-                    BIIIIIIIIIIIIG TESET.
-                </p>
-                </button>
+        <main className="debug flex min-h-screen flex-col items-center">
+            <div className="debug flex w-11/12 flex-col mt-3"> {/* EVENT MODULE */}
+                <p className="font-semibold">Nästa event</p>
+                <div className="flex w-full flex-row border border-black rounded-lg">
+                    <div className="flex w-1/3 relative mr-3">
+                        <Image alt="Preview image of event" src={gasqueImage} fill={true} objectFit="cover"></Image>
+                    </div>
+                    <div className="flex w-2/3 flex-col">
+                        <p className="font-semibold">Neverland Gasque</p>
+                        <p>Fredag 17-00</p>
+                        <p>META</p>
+                        <p>Kostar</p>
+                    </div>
+                </div>
 
-                <a
-                href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-                className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-                target="_blank"
-                rel="noopener noreferrer"
-                >
-                <h2 className={`mb-3 text-2xl font-semibold`}>
-                    Learn{" "}
-                    <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-                    -&gt;
-                    </span>
-                </h2>
-                <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-                    Learn about Next.js in an interactive course with&nbsp;quizzes!
-                </p>
-                </a>
+            </div>
+            <div className="debug flex mt-3"> {/* ANNOUNCEMENTS MODULE */}
+                <p className="font-semibold">Senaste anslag</p>
             </div>
         </main>
     );
