@@ -145,6 +145,35 @@ const UpdateUser = () => {
       alert('Please provide both a user ID and a profile picture.');
     }
   };
+  // upload posts
+  const handleUploadPosts = async (event: FormEvent) => {
+    event.preventDefault();
+    try {
+      const response = await fetch('/api/postPosts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ uid }),
+      });
+
+      if (!response.ok) {
+        console.error("HTTP error", response.status);
+        alert('Failed to upload posts: ' + response.statusText);
+        return;
+      }
+
+      const data = await response.json();
+      console.log('Success:', data);
+      alert('Posts uploaded successfully!');
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error('Error:', error);
+        alert('Failed to upload posts: ' + error.message);
+      }
+    }
+  }
+
   checkAdminStatus();
 
   if (loading) {
@@ -159,6 +188,8 @@ const UpdateUser = () => {
 
   return (
     <>
+      <button className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30" type="submit" onClick={handleUploadPosts}>Update Posts</button>
+
       <form onSubmit={handleSubmitName}>
         <h1 className={`mb-3 text-2xl font-semibold`}>Update User DisplayName</h1>
         <label htmlFor="uid">User ID:
