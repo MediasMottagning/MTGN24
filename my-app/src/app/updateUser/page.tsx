@@ -24,7 +24,7 @@ const UpdateUser = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-
+  // check if user is admin
   useEffect(() => {
     const checkAdminStatus = async () => {
       const auth = getAuth();
@@ -207,7 +207,7 @@ const UpdateUser = () => {
   return (
     <>
         <form className="" onSubmit={handleUploadPosts}>
-          <h1 className="mb-3 text-2xl font-semibold">Generate Post</h1>
+          <h1 className="mb-3 text-2xl font-semibold">Create Post</h1>
           <label htmlFor="title">Title
             <input
               className="border border-gray-300 rounded-lg p-2 text-black"

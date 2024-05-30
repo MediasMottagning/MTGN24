@@ -4,16 +4,15 @@ import { FieldValue } from 'firebase-admin/firestore';
 
 export async function POST(req: NextRequest) {
   try {
-    const { uid, title, post } = await req.json();
-    console.log('Received data:', { uid, title, post });
+    const {title, post } = await req.json();
+    //console.log('Received data:', { uid, title, post });
     // repond with an error if any of the required fields are missing
-    if (!uid || !title || !post) {
+    if (!title || !post) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
     const postRef = db.collection('posts').doc(); 
     await postRef.set({
-        uid,
         title,
         post,
         createdAt: FieldValue.serverTimestamp(), // field which stores the time the post was created, only used to sort posts
