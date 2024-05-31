@@ -14,35 +14,10 @@ import AnslagCard from "../components/AnslagCard";
 
 const gasqueImage = "/gasqueImg.png";
 
-async function getCollectionData() {
-  const querySnapshot = await getDocs(collection(db, "users"));
-  querySnapshot.forEach((doc) => {
-    console.log(`${doc.id} => ${doc.data().username}`);
-  });
-}
-// get posts from firestore
-const getPosts = async (): Promise<Post[]> => {
-    const postsSnapshot = await getDocs(collection(db, "posts"));
-    const postsData = postsSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-    })) as Post[];
-    return postsData;
-};
 
 export default function Home() {
     // check if user is logged in
     const { user }= useAuth();
-
-    // get posts from firestore
-    const [posts, setPosts] = useState<Post[]>([]);
-    useEffect(() => {
-        const fetchPosts = async () => {
-            const postsArray = await getPosts();
-            setPosts(postsArray);
-        };
-        fetchPosts();
-    }, []);
 
     // if user is not logged in, redirect to login page
     if (!user){ return <h1>Please login</h1>;}
