@@ -4,28 +4,69 @@ import useAuth from '../components/useAuth';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { storage, db } from '../lib/firebaseConfig';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { set } from 'firebase/database';
 
+/* Admin page for updating user information, posting new posts and more */
 const UpdateUser = () => {
   const [uid, setUid] = useState('');
+  // for display name
   const [displayName, setDisplayName] = useState('');
+  // for profile picture
   const [image, setImage] = useState<File | null>(null);
+  // for admin check
   const { user } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
-  // check admin status, uses custom user claim "isAdmin" on firebase
+  // for posting new posts
+  const [title, setTitle] = useState('');
+  const [post, setPost] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  // check if user is admin
   useEffect(() => {
     const checkAdminStatus = async () => {
-      if (user) {
-        const currentUserDoc = await getDoc(doc(db, "users", user.uid));
-        const currentUserData = currentUserDoc.data();
-        setIsAdmin(currentUserData?.isAdmin || false);
-      }
-      setLoading(false);
+      const auth = getAuth();
+      onAuthStateChanged(auth, async (user) => {
+        // get user auth token and send to API endpoint /api/isAdmin
+        if (user) {
+          try {
+            const idToken = await user.getIdToken();
+            const response = await fetch('/api/isAdmin', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${idToken}`,
+              },
+            });
+
+            if (!response.ok) {
+              // Error response from the server, only for debugging
+              console.error('Response error:', response.status, response.statusText);
+              const errorText = await response.text(); 
+              console.error('Response text:', errorText);
+              throw new Error('Failed to fetch admin status');
+            }
+
+            const data = await response.json();
+            setIsAdmin(data.isAdmin);
+            console.log("Admin status:", data.isAdmin);
+          } catch (error) {
+            console.error('Error:', error);
+          } finally {
+            setLoading(false);
+          }
+        } else {
+          setLoading(false); // set loading to false if user is not admin
+        }
+      });
     };
 
     checkAdminStatus();
-  }, [user]);
+  }, []); // run only once
 
+  // image change handler
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setImage(e.target.files[0]);
@@ -121,6 +162,37 @@ const UpdateUser = () => {
       alert('Please provide both a user ID and a profile picture.');
     }
   };
+  // upload posts
+  const handleUploadPosts = async (event: FormEvent) => {
+    event.preventDefault();
+    // user feedback if post is created successfully or not
+    /* OM NGN HAR TID KAN NI FIXA SÅNNA HÄR PÅ DE ANDRA HANDLERNSERNA? */
+    setError('');
+    setSuccess('');
+
+    try {
+      const response = await fetch('/api/postPosts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ uid, title, post }), 
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || 'Something went wrong');
+      }
+
+      setSuccess('Post created successfully!');
+      // clear input fields
+      setTitle('');
+      setPost('');
+    } catch (error) {
+      setError((error as Error).message);
+    }
+  };
+
 
   if (loading) {
     return <h1>Loading...</h1>;
@@ -134,6 +206,30 @@ const UpdateUser = () => {
 
   return (
     <>
+        <form className="" onSubmit={handleUploadPosts}>
+          <h1 className="mb-3 text-2xl font-semibold">Create Post</h1>
+          <label htmlFor="title">Title
+            <input
+              className="border border-gray-300 rounded-lg p-2 text-black"
+              type="text"
+              id="title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </label>
+          <label htmlFor="post">Post
+            <textarea
+              className="border border-gray-300 rounded-lg p-2 text-black w-full h-64 resize-none"
+              id="post"
+              value={post}
+              onChange={(e) => setPost(e.target.value)}
+            ></textarea>
+          </label>
+        <button type="submit">Create Post</button>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {success && <p style={{ color: 'green' }}>{success}</p>}
+      </form>
+
       <form onSubmit={handleSubmitName}>
         <h1 className={`mb-3 text-2xl font-semibold`}>Update User DisplayName</h1>
         <label htmlFor="uid">User ID:
