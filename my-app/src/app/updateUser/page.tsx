@@ -20,7 +20,7 @@ const UpdateUser = () => {
   const [loading, setLoading] = useState(true);
   // for posting new posts
   const [title, setTitle] = useState('');
-  const [post, setPost] = useState('');
+  const [description, setDescription] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -176,7 +176,7 @@ const UpdateUser = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ uid, title, post }), 
+        body: JSON.stringify({ title, description }), 
       });
 
       const data = await response.json();
@@ -187,7 +187,7 @@ const UpdateUser = () => {
       setSuccess('Post created successfully!');
       // clear input fields
       setTitle('');
-      setPost('');
+      setDescription('');
     } catch (error) {
       setError((error as Error).message);
     }
@@ -221,8 +221,8 @@ const UpdateUser = () => {
             <textarea
               className="border border-gray-300 rounded-lg p-2 text-black w-full h-64 resize-none"
               id="post"
-              value={post}
-              onChange={(e) => setPost(e.target.value)}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
             ></textarea>
           </label>
         <button type="submit">Create Post</button>

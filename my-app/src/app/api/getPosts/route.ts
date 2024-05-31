@@ -4,7 +4,7 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../lib/firebaseConfig';
 
 
-/* set Custom claim that a UID has admin rights */
+/* get posts from firestore */
 export async function GET(req: NextRequest) {
   const { uid } = await req.json();
 
