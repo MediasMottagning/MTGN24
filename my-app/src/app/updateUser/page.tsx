@@ -6,6 +6,7 @@ import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { storage, db } from '../lib/firebaseConfig';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { set } from 'firebase/database';
+import { get } from 'http';
 
 /* Admin page for updating user information, posting new posts and more */
 const UpdateUser = () => {
@@ -192,7 +193,22 @@ const UpdateUser = () => {
       setError((error as Error).message);
     }
   };
-
+  // get event folders/ids
+  const getFolders = async () => {
+    try {
+      const response = await fetch('/api/getEvents');
+      const data = await response.json();
+      if (response.ok) {
+        return data.folders;
+      } else {
+        throw new Error(data.error || 'Failed to fetch folders');
+      }
+    } catch (error) {
+      console.error('Error fetching folders:', error);
+      return [];
+    }
+  };
+  console.log(getFolders());
 
   if (loading) {
     return <h1>Loading...</h1>;
