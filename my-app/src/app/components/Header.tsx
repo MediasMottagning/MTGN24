@@ -28,11 +28,13 @@ export default function Header() {
             {/* dropdown menu, phone om ni ska lägga in nya länkar lägg in de i bägge menyerna dvs. dropdown och landscape*/}
             <div className={`absolute top-full right-0 mt-2 w-full bg-white shadow-md z-10 flex flex-col items-center gap-4 p-4 transition-opacity duration-300 portrait:flex ${isMenuOpen ? "opacity-100 portrait:block" : "opacity-0 hidden portrait:hidden"}`}>
                 <Link href="/profil" className="py-2 text-blue-500 hover:text-blue-700" onClick={closeMenu}>Profil</Link>
+                <Link href="/event" className="py-2 text-blue-500 hover:text-blue-700" onClick={closeMenu}>Event</Link>
                 <LogoutButton onClose={closeMenu} />
             </div>
             {/* landscape menu, computer*/}
             <div className="hidden landscape:flex items-center gap-4">
                 <Link href="/profil" className="text-blue-500 hover:text-blue-700">Profil</Link>
+                <Link href="/event" className="text-blue-500 hover:text-blue-700">Event</Link>
                 <LogoutButton />
             </div>
         </header>

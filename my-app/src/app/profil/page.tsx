@@ -63,6 +63,7 @@ const Home = () => {
         checkAdminStatus();
       }, []); // run only once
     // fetch the fun fact from the users profile on firestore
+    /* OM NÅGON HAR TID ÄNDRA DENNA FUNKTION SÅ ATT DET BLIR EN FETCH METOD SOM KALLAR PÅ EN API ENDPOINT ISTÄLLET*/
     useEffect(() => {
         if (user) {
             const fetchUserData = async () => {
