@@ -8,46 +8,54 @@ import { getStorage, ref, getDownloadURL } from "firebase/storage"; // for profi
 
 export default function N0llanGrupper(){
     
-    var userUrls = new Array();
+    const [userUrls, setUserUrls] = useState<string[]>([]);
     // check if user is logged in
     const { user }= useAuth();
     // if user is not logged in, redirect to login page
-    if (!user){ return <h1>Please login u dumb fuq</h1>;}
+    if (!user){ return <h1>Please login :|</h1>;}
+
+    useEffect(() => {
+        if (user) {
+            getCollectionData();
+        }
+    }, [user]);
 
     async function getCollectionData() {
+        const urls: string[] = [];
         const querySnapshot = await getDocs(collection(db, "users"));
-        querySnapshot.forEach(async (userDoc) => {
-        const userProfileRef = doc(db, "users", userDoc.id);
-                try {
-                    const docSnap = await getDoc(userProfileRef);
-                    if(docSnap.exists()){
-                        const userData = docSnap.data();
-                        const picUrl = userData.profilePic;
-                        if (picUrl) {
-                            const storage = getStorage();
-                            const picRef = ref(storage, picUrl);
-                            getDownloadURL(picRef)
-                                .then((url) => {
-                                    userUrls.push(url)
-                                    console.log(userUrls)
-                                })
-                                .catch((error) => {
-                                    console.error("Error fetching profile picture:", error);
-                                });
-                        }
+        const storage = getStorage();
+
+        for (const userDoc of querySnapshot.docs) {
+            const userProfileRef = doc(db, "users", userDoc.id);
+            const docSnap = await getDoc(userProfileRef);
+
+            if (docSnap.exists()) {
+                const userData = docSnap.data();
+                const picUrl = userData.profilePic;
+
+                if (picUrl) {
+                    try {
+                        const picRef = ref(storage, picUrl);
+                        const url = await getDownloadURL(picRef);
+                        urls.push(url);
+                    } catch (error) {
+                        console.error("Error fetching profile picture:", error);
                     }
                 }
-                catch{
-                    console.log("Error");
-                }
-        });
-      }
+            }
+        }
+        setUserUrls(urls);
+    }
 
     return (
         <main>
-            <div>test</div>
-            <button onClick={getCollectionData}>test</button>
-            
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {userUrls.map((url, index) => (
+                    <div key={index} className="bg-white p-4 rounded-lg shadow-md">
+                        <img src={url} alt={`User ${index + 1}`} className="w-full h-auto" />
+                    </div>
+                ))}
+            </div>
         </main>
     )
 }
