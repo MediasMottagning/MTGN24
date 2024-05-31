@@ -9,10 +9,7 @@ import { getStorage, ref, getDownloadURL } from "firebase/storage"; // for profi
 export default function N0llanGrupper(){
     
     const [userUrls, setUserUrls] = useState<string[]>([]);
-    // check if user is logged in
-    const { user }= useAuth();
-    // if user is not logged in, redirect to login page
-    if (!user){ return <h1>Please login :|</h1>;}
+    const { user } = useAuth();
 
     useEffect(() => {
         if (user) {
@@ -46,6 +43,8 @@ export default function N0llanGrupper(){
         }
         setUserUrls(urls);
     }
+
+    if (!user){ return <h1>Please login :|</h1>;}
 
     return (
         <main>
