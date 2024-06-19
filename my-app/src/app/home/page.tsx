@@ -9,13 +9,12 @@ import LogoutButton from "../components/LogoutBtn";
 import useAuth from "../components/useAuth";
 import { set } from "firebase/database";
 import { Post } from "../lib/definitions";
+import { NextRequest, NextResponse } from "next/server";
 
 
-export default function Home() {
+export default function Home(request: NextRequest, response: NextResponse) {
     // check if user is logged in
     const { user }= useAuth();
-
-   
 
     // if user is not logged in, redirect to login page
     if (!user){ return <h1>Please login</h1>;}

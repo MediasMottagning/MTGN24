@@ -9,14 +9,17 @@ if (!projectId || !clientEmail || !privateKey) {
   throw new Error("Missing Firebase configuration environment variables");
 }
 
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert({
-      projectId,
-      clientEmail,
-      privateKey,
-    }),
-  });
+// initialize firebase admin
+export function customInitApp() {
+  if (!admin.apps.length) {
+    admin.initializeApp({
+      credential: admin.credential.cert({
+        projectId,
+        clientEmail,
+        privateKey,
+      }),
+    });
+  }
 }
 
 const auth = admin.auth();

@@ -196,7 +196,13 @@ const UpdateUser = () => {
   // get event folders/ids
   const getFolders = async () => {
     try {
-      const response = await fetch('/api/getEvents');
+      const response = await fetch('/api/getEvents', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+      );
       const data = await response.json();
       if (response.ok) {
         return data.folders;
