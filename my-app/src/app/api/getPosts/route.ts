@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDocs, collection } from 'firebase/firestore';
-import { db } from '../../lib/firebaseConfig';
-import { auth } from '../../lib/firebaseAdmin';
+import { db, auth } from '../../lib/firebaseAdmin';
 
 /* API endpoint for fetching posts */
 export async function GET(req: NextRequest) {
@@ -13,14 +12,19 @@ export async function GET(req: NextRequest) {
     const idToken = authHeader.split('Bearer ')[1];
     try {
         const decodedToken = await auth.verifyIdToken(idToken);
-
+        // if the token is invalid, return an error
         if (!decodedToken) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
+        //console.log(decodedToken);
+        const collectionRef = db.collection('posts');
+        const snapshot = await collectionRef.get();
+        const posts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
+        /*
         const postRef = await getDocs(collection(db, 'posts'));
         const posts = postRef.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
+        */
         return NextResponse.json({ posts });
     } catch (error) {
         console.error('Error fetching posts:', error);

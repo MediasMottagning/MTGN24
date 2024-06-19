@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '../../lib/firebaseAdmin'; // Ensure this path is correct
+import "../../lib/firebaseConfig"; // Ensure this path is correct
 
 /* API endpoint for checking custom admin claim */
 export async function POST(req: NextRequest) {

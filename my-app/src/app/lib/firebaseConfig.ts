@@ -24,7 +24,6 @@ const auth: Auth = getAuth(app);
 // Set the local persistence to the browser
 setPersistence(auth, browserLocalPersistence);
 
-
 // Initialize Firestore
 const db = getFirestore(app);
 

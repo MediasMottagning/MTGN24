@@ -23,6 +23,7 @@ export default function Event() {
             try {
                 const token = await user.getIdToken();
                 const response = await fetch('/api/getPosts', {
+                    method: 'GET',
                     headers: {
                         "Authorization": `Bearer ${token}`,
                     },

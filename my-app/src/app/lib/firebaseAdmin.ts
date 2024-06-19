@@ -10,17 +10,16 @@ if (!projectId || !clientEmail || !privateKey) {
 }
 
 // initialize firebase admin
-export function customInitApp() {
-  if (!admin.apps.length) {
-    admin.initializeApp({
-      credential: admin.credential.cert({
-        projectId,
-        clientEmail,
-        privateKey,
-      }),
-    });
-  }
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert({
+      projectId,
+      clientEmail,
+      privateKey,
+    }),
+  });
 }
+
 
 const auth = admin.auth();
 const db = admin.firestore();

@@ -4,7 +4,7 @@ import { FormEvent, useEffect, useState } from 'react';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { getStorage, ref, getDownloadURL } from "firebase/storage"; // for profile pic
 import { getAuth, onAuthStateChanged, updatePassword } from "firebase/auth";
-import { db } from '../lib/firebaseConfig';
+import { db, auth } from '../lib/firebaseConfig';
 import LogoutButton from "../components/LogoutBtn";
 import useAuth from "../components/useAuth";
 import { Montserrat_Alternates } from 'next/font/google';

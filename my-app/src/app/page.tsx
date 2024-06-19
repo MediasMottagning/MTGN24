@@ -36,6 +36,7 @@ const Home: React.FC = () => {
         
         if (response.status === 200) {
           //console.log(response);
+          
           router.push("/home");
         }
       }
