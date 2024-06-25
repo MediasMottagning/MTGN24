@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
     const idToken = authHeader.split('Bearer ')[1];
     try {
         const decodedToken = await auth.verifyIdToken(idToken);
-        // if the token is invalid, return an error
+        // if the token is invalid, return an Unauthorized response
         if (!decodedToken) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
