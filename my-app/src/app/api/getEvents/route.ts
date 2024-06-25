@@ -18,22 +18,25 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
         //console.log(decodedToken);
-        const bucket = storage.bucket("mottagningen-7063b.appspot.com"); // Access the default bucket
+        // specify the bucket name
+        const bucket = storage.bucket("mottagningen-7063b.appspot.com"); 
         const options = {
           prefix: 'events/test/',  
-          delimiter: '/'      // To include subdirectories
+          delimiter: '/'
         };
 
-        const [files] = await bucket.getFiles(options);  // Fetch files under "events" with any subdirectory structure
+        // get all files under specified prefix
+        const [files] = await bucket.getFiles(options);  
         const promises = files.map(file =>
             file.getSignedUrl({
                 action: 'read',
-                expires: '03-09-2491'  // Set a far future expiration date
+                expires: '03-09-2491'  // CHANGE THIS LATER TO A REASONABLE DATE (tex efter MTGN)
             })
         );
         
+        // get signed urls for all files
         const signedUrls = await Promise.all(promises);
-        const imageUrls = signedUrls.map(url => url[0]);  // Extract the URL from the response
+        const imageUrls = signedUrls.map(url => url[0]);  
         //console.log(imageUrls);
 
         return NextResponse.json({ imageUrls });
