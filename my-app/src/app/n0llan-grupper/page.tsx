@@ -8,9 +8,14 @@ import { getStorage, ref, getDownloadURL } from "firebase/storage";
 export default function N0llanGrupper(){
     
     const [groupBool, setGroupBool] = useState<boolean[]>([]);
-
     const [groupsData, setGroupsData] = useState<string[]>([]);
     const [userData, setUserData] = useState<DocumentData[]>([]);
+
+    const [popUpBool, setPopUpBool] = useState(false);
+    const [popUpName, setPopUpName] = useState("");
+    const [popUpPic, setPopUpPic] = useState("");
+    const [popUpFunFact, setPopUpFunFact] = useState("");
+
     const { user } = useAuth();
     const storage = getStorage();
 
@@ -59,9 +64,20 @@ export default function N0llanGrupper(){
         });
     };
 
+    const togglePopUpBool = () => {
+        setPopUpBool(!popUpBool);
+    };
+
     async function test() {
         console.log(groupsData);
         console.log(groupBool)
+    }
+
+    async function showUserProfile(profilePic: string, name: string, funFact: string){
+        togglePopUpBool();
+        setPopUpPic(profilePic);
+        setPopUpName(name);
+        setPopUpFunFact(funFact);
     }
 
     function groupSeparation(group: string, index: number) {
@@ -77,10 +93,10 @@ export default function N0llanGrupper(){
                 
                 <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                     {groupUsers.map((user, index) => (
-                        <div key={index} className="bg-white p-4 rounded-lg shadow-md">
+                        <button onClick={() => showUserProfile(user.profilePic, user.funFact, user.funFact)} key={index} className="bg-white p-4 rounded-lg shadow-md">
                             <img src={user.profilePic} alt={`User ${index + 1}`} className="w-full h-auto" />
                             <h1 className="bg-black">{user.funFact /*n0llan-namn???*/}</h1>
-                        </div>
+                        </button>
                     ))}
                 </div>
             </div>
@@ -96,6 +112,16 @@ export default function N0llanGrupper(){
             <div>{groupsData.map((group, index) => groupSeparation(group, index))}</div>
             <div>
                 <button onClick={test}>test</button>
+            </div>
+            <div className={`fixed top-0 left-0 w-full h-full flex items-center justify-center z-50 ${popUpBool ? "portrait:block" : "opacity-0 hidden portrait:hidden"}`}>
+                <div className="bg-white p-8 rounded-lg shadow-lg">
+                    <img src={popUpPic} className="w-auto h-[50vh]"/>
+                    <h1 className="bg-black">{popUpName /*n0llan-namn???*/}</h1>
+                    <h1 className="bg-black">{popUpFunFact}</h1>
+                    <button onClick={togglePopUpBool} className="bg-blue-500 text-white px-4 py-2 mt-4 rounded hover:bg-blue-600">
+                        Close
+                    </button>
+                </div>
             </div>
         </main>
     )
