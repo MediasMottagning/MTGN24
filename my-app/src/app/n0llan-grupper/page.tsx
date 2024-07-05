@@ -70,7 +70,7 @@ export default function N0llanGrupper(){
 
     async function test() {
         console.log(groupsData);
-        console.log(groupBool)
+        console.log(groupBool);
     }
 
     async function showUserProfile(profilePic: string, name: string, funFact: string){
@@ -93,9 +93,9 @@ export default function N0llanGrupper(){
                 
                 <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                     {groupUsers.map((user, index) => (
-                        <button onClick={() => showUserProfile(user.profilePic, user.funFact, user.funFact)} key={index} className="bg-white p-4 rounded-lg shadow-md">
+                        <button onClick={() => showUserProfile(user.profilePic, user.name, user.funFact)} key={index} className="bg-white p-4 rounded-lg shadow-md">
                             <img src={user.profilePic} alt={`User ${index + 1}`} className="w-full h-auto" />
-                            <h1 className="bg-black">{user.funFact /*n0llan-namn???*/}</h1>
+                            <h1 className="bg-black">{user.name /*n0llan-namn???*/}</h1>
                         </button>
                     ))}
                 </div>
@@ -117,7 +117,7 @@ export default function N0llanGrupper(){
                 <div className="bg-white p-8 rounded-lg shadow-lg">
                     <img src={popUpPic} className="w-auto h-[50vh]"/>
                     <h1 className="bg-black">{popUpName /*n0llan-namn???*/}</h1>
-                    <h1 className="bg-black">{popUpFunFact}</h1>
+                    <h1 className="bg-black">Fun fact: {popUpFunFact}</h1>
                     <button onClick={togglePopUpBool} className="bg-blue-500 text-white px-4 py-2 mt-4 rounded hover:bg-blue-600">
                         Close
                     </button>
