@@ -13,9 +13,10 @@ import EventCard from "../components/EventCard";
 import AnslagCard from "../components/AnslagCard";
 
 const gasqueImage = "/gasqueImg.png";
+import { NextRequest, NextResponse } from "next/server";
 
 
-export default function Home() {
+export default function Home(request: NextRequest, response: NextResponse) {
     // check if user is logged in
     const { user }= useAuth();
 

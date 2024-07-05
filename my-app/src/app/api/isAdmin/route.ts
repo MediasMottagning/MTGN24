@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '../../lib/firebaseAdmin'; // Ensure this path is correct
+import "../../lib/firebaseConfig"; // Ensure this path is correct
 
 /* API endpoint for checking custom admin claim */
+/* MOSTLY USED TO RESTRICT ACCESS FOR N0LLAN */
 export async function POST(req: NextRequest) {
   const authHeader = req.headers.get('Authorization');
   if (!authHeader) {

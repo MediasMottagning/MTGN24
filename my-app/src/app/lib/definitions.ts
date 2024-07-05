@@ -29,5 +29,5 @@ export interface LoginFormState {
 export interface Post {
   id: string;
   title: string;
-  post: string;
+  description: string;
 }

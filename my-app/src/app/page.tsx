@@ -1,11 +1,9 @@
-"use client"
-import { useState, FormEvent } from 'react';
+"use client";
+import { useState, useEffect, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from './lib/firebaseConfig'; 
+import { getRedirectResult, signInWithEmailAndPassword, signInWithRedirect } from 'firebase/auth';
+import { auth, provider } from './lib/firebaseConfig'; 
 
-
-// function to generate an email from a username to login
 const generateEmailForUsername = (username: string): string => {
   return `${username}@mtgn.nu`;
 };
@@ -13,32 +11,45 @@ const generateEmailForUsername = (username: string): string => {
 const Home: React.FC = () => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  // TODO: ADD TIMER FOR LOGIN BUTTON
   const [isDisabled, setIsDisabled] = useState<boolean>(false);  // used for timeout on login button
   const router = useRouter();
 
-  // login handler
-  const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
+
+  const handleSignIn = async (event: FormEvent) => {
     event.preventDefault();
     setIsDisabled(true);
-    const email = generateEmailForUsername(username);
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-        // redirect to home page if login is successful
-        router.push('/home'); 
-      } catch (error: any) {
-        // login error handler
-        console.error("LOGIN ERROR: ",error.message);
-        alert("Login failed. Please try again.");
+    
+    try {
+      const email = generateEmailForUsername(username);
+      await signInWithEmailAndPassword(auth, email, password);
+      
+      // successful login
+      const idToken = await auth.currentUser?.getIdToken();
+      if (idToken) {
+        const response = await fetch("/api/login", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        });
+        
+        if (response.status === 200) {
+          //console.log(response);
+          
+          router.push("/home");
+        }
       }
-    // re-enable login button after 2 seconds
-    setTimeout(() => {
+    } catch (error) {
+      console.error("Error signing in: ", error);
+    } finally {
       setIsDisabled(false);
-    }, 2000);
+    }
   };
 
   return (
     <main>
-      <form onSubmit={handleLogin}>
+      <form onSubmit={handleSignIn}>
         <input
           className="border border-gray-300 rounded-lg p-2 text-black"
           type="text"
