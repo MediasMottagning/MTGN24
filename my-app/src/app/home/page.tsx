@@ -11,24 +11,56 @@ import { set } from "firebase/database";
 import { Post } from "../lib/definitions";
 import EventCard from "../components/EventCard";
 import AnslagCard from "../components/AnslagCard";
+import { NextRequest, NextResponse } from "next/server";
 
 const gasqueImage = "/gasqueImg.png";
-import { NextRequest, NextResponse } from "next/server";
+const homeGradient = "/homeGradient.jpg"
 
 
 export default function Home(request: NextRequest, response: NextResponse) {
     // check if user is logged in
-    const { user }= useAuth();
+    const { user } = useAuth();
 
-    // if user is not logged in, redirect to login page
-    if (!user){ return <h1>Please login</h1>;}
+    const [posts, setPosts] = useState<Post[]>([]);
+    
+    useEffect(() => {
+        
+        const fetchPostsData = async () => {
+            // if user is not logged in, redirect to login page
+            if (!user){ return <h1>Please login</h1>;}
+            const token = await user.getIdToken();
+            const response = await fetch('/api/getPosts', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                const sortedPosts = data.posts.sort((a: Post, b: Post) => { // Sort posts by when they were created. Newest first.
+                    const createdAt_A = new Date(a.createdAt);
+                    const createdAt_B = new Date(b.createdAt);
+                    return createdAt_B.getTime() - createdAt_A.getTime();
+                });
+                setPosts(sortedPosts);
+            }
+            
+        };
 
+        fetchPostsData();
+    }, [user]);
+
+    useEffect(() => {
+        // Log posts after they have been set
+        console.log(posts);
+
+    }, [posts]);
 
     return (
-        <main className="flex min-h-screen flex-col items-center">
-            <div className="flex w-11/12 flex-col mt-3"> {/* EVENT MODULE */}
-                <p className="font-semibold pl-2">Nästa event</p>
-                <div className="flex flex-col space-y-2">
+        <main className="flex min-h-screen flex-col items-center bg-homeGradientImg bg-cover bg-center">
+            <div className="flex w-11/12 flex-col mt-5"> {/* EVENT MODULE */}
+                <p className="font-semibold text-lg pl-1">Nästa event</p>
+                <div className="flex flex-col space-y-5">
                     <EventCard title="Neverland Gasque"
                                 time="Fredag 18:00"
                                 location="META"
@@ -42,13 +74,14 @@ export default function Home(request: NextRequest, response: NextResponse) {
                                 image=""/>
                 </div>
             </div>
-            <div className="flex w-11/12 flex-col mt-3"> {/* EVENT MODULE */}
-                <p className="font-semibold pl-2">Senaste anslag</p>
-                <div className="flex flex-col space-y-2">
-                    <AnslagCard title="Gratis pizza i D34"
-                                desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit..."/>
-                    <AnslagCard title="Ingen brainrot i korridoren"
-                                desc="Snälla sluta skrika 'skibidi toilet' i korridoren. Phöseriets hjärnor hålla på smält "/>
+            <div className="flex w-11/12 flex-col mt-5 "> {/* EVENT MODULE */}
+                <p className="font-semibold text-lg pl-1">Senaste anslag</p>
+                <div className="flex flex-col space-y-5">
+                    {posts.slice(0, 3).map((post) => { // Render only the first x elements in 'posts'
+                        return (
+                            <AnslagCard key={post.id} title={post.title} description={post.description} createdAt={post.createdAt}/>
+                        );
+                    })}
                 </div>
             </div>
         </main>

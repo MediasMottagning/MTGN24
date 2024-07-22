@@ -9,7 +9,7 @@ const ticketIcon = "/ticket-48.png";
 
 export default function EventCard(params:any) {
     return (
-        <div className="flex w-full flex-row border border-black rounded-lg">
+        <div className="flex w-full flex-row bg-white drop-shadow-homeShadow rounded-lg">
             <div className="flex w-1/3 relative mr-1">
                 <Image alt="Preview image of event" src={params.image || lokeImage} fill={true} objectFit="cover" className="rounded-l-md"></Image>
             </div>

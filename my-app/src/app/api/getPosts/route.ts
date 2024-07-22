@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDocs, collection } from 'firebase/firestore';
 import { db, auth } from '../../lib/firebaseAdmin';
+import { Post } from '../../lib/definitions';
 
 /* API endpoint for fetching posts */
 export async function GET(req: NextRequest) {
@@ -19,12 +20,20 @@ export async function GET(req: NextRequest) {
         //console.log(decodedToken);
         const collectionRef = db.collection('posts');
         const snapshot = await collectionRef.get();
-        const posts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+       
+        // const posts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+        const posts: Post[] = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            title: doc.data().title,
+            description: doc.data().description,
+            createdAt: doc.data().createdAt.toDate(), // convert Firestore Timestamp to JS Date for easier handling
+          }));
 
         /*
         const postRef = await getDocs(collection(db, 'posts'));
         const posts = postRef.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        */
+        */        
         return NextResponse.json({ posts });
     } catch (error) {
         console.error('Error fetching posts:', error);
