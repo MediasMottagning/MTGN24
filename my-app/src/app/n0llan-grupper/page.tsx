@@ -88,14 +88,14 @@ export default function N0llanGrupper(){
         const groupUsers = userData.filter(user => {if (user.group == group) return user});
         
         return(<div key={group + "1"}>
-            <button onClick={() => toggleGroupBool(index)} className='bg-black'>{group}</button>
-            <div className={`flexible top-full right-0 mt-2 w-full bg-white shadow-md z-10 flex flex-col items-center gap-4 p-4 transition-opacity duration-300 portrait:flex ${groupBool[index] ? "opacity-100 portrait:block" : "opacity-0 hidden portrait:hidden"}`}>
+            <button onClick={() => toggleGroupBool(index)} className='bg-white text-black text-center w-full font-bold'>{group}</button>
+            <div className={`flexible top-full right-0 mt-2 w-full shadow-md z-10 flex flex-col items-center gap-4 p-4 transition-opacity duration-300 portrait:flex ${groupBool[index] ? "opacity-100 portrait:block" : "opacity-0 hidden portrait:hidden"}`}>
                 
                 <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                     {groupUsers.map((user, index) => (
-                        <button onClick={() => showUserProfile(user.profilePic, user.name, user.funFact)} key={index} className="bg-white p-4 rounded-lg shadow-md">
-                            <img src={user.profilePic} alt={`User ${index + 1}`} className="w-full h-auto" />
-                            <h1 className="bg-black">{user.name /*n0llan-namn???*/}</h1>
+                        <button onClick={() => showUserProfile(user.profilePic, user.name, user.funFact)} key={index} className="bg-white p-4 rounded-lg drop-shadow-lg">
+                            <img src={user.profilePic} alt={`User ${index + 1}`} className="w-full h-auto rounded-lg" />
+                            <h1 className="text-black pt-2">{user.name /*n0llan-namn???*/}</h1>
                         </button>
                     ))}
                 </div>
@@ -108,7 +108,7 @@ export default function N0llanGrupper(){
 
     return (
         <main>
-            <h1>n0llan-grupper:</h1>
+            {/*<h1>n0llan-grupper:</h1>*/}
             <div>{groupsData.map((group, index) => groupSeparation(group, index))}</div>
             <div>
                 <button onClick={test}>test</button>
