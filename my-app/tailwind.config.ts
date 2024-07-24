@@ -20,7 +20,16 @@ const config: Config = {
       dropShadow: {
         // 'name': 'x-offset y-offset blur-radius color'
         'homeShadow': '0 4px 2px rgba(0, 0, 0, 0.3)',
-      }
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: "0" },
+          '100%': { opacity: "1" },
+        },
+      },
+      animation: {
+        fadeIn: 'fadeIn 0.4s ease-in-out',
+      },
     },
   },
   plugins: [],
