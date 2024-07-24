@@ -57,9 +57,12 @@ export default function Home(request: NextRequest, response: NextResponse) {
     }, [posts]);
 
     return (
-        <main className="flex min-h-screen flex-col items-center bg-homeGradientImg bg-cover bg-center">
-            <div className="flex w-11/12 flex-col mt-5"> {/* EVENT MODULE */}
-                <p className="font-semibold text-lg pl-1">Nästa event</p>
+        <main className="flex min-h-screen flex-col items-center bg-gradient-to-r from-[#A5CACE] to-[#4FC0A0]">
+            <div className="flex w-11/12 flex-col mt-5 md:mt-9 max-w-2xl"> {/* EVENT MODULE */}
+                <div className="flex flex-row">
+                    <p className="font-semibold text-lg sm:text-2xl ml-1">Nästa event</p>
+                    <p className="text-2xl sm:text-3xl ml-1">🥳</p>
+                </div>
                 <div className="flex flex-col space-y-5">
                     <EventCard title="Neverland Gasque"
                                 time="Fredag 18:00"
@@ -74,12 +77,19 @@ export default function Home(request: NextRequest, response: NextResponse) {
                                 image=""/>
                 </div>
             </div>
-            <div className="flex w-11/12 flex-col mt-5 "> {/* EVENT MODULE */}
-                <p className="font-semibold text-lg pl-1">Senaste anslag</p>
+            <div className="flex w-11/12 flex-col mt-5 md:mt-9 max-w-2xl mb-5"> {/* EVENT MODULE */}
+            <div className="flex flex-row">
+                    <p className="font-semibold text-lg sm:text-2xl pl-1">Senaste anslag</p>
+                    <p className="text-2xl sm:text-3xl ml-1">📣</p>
+                </div>
+                
                 <div className="flex flex-col space-y-5">
                     {posts.slice(0, 3).map((post) => { // Render only the first x elements in 'posts'
                         return (
-                            <AnslagCard key={post.id} title={post.title} description={post.description} createdAt={post.createdAt}/>
+                            <AnslagCard key={post.id}
+                                title={post.title}
+                                description={post.description}
+                                createdAt={post.createdAt}/>
                         );
                     })}
                 </div>
