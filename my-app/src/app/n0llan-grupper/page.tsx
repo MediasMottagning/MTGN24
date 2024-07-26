@@ -2,11 +2,11 @@
 import { FormEvent, useEffect, useState } from 'react';
 import useAuth from "../components/useAuth";
 import { doc, getDoc, setDoc, collection, getDocs, DocumentData } from 'firebase/firestore';
-import { db} from '../lib/firebaseConfig';
-import { getStorage, ref, getDownloadURL } from "firebase/storage"; 
+import { db } from '../lib/firebaseConfig';
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
-export default function N0llanGrupper(){
-    
+export default function N0llanGrupper() {
+
     const [groupBool, setGroupBool] = useState<boolean[]>([]);
     const [groupsData, setGroupsData] = useState<string[]>([]);
     const [userData, setUserData] = useState<DocumentData[]>([]);
@@ -33,27 +33,26 @@ export default function N0llanGrupper(){
             const docSnap = await getDoc(userProfileRef);
             if (docSnap.exists()) {
                 var userData = docSnap.data();
-                if (userData.profilePic)
-                    {
-                        try {
-                            const picRef = ref(storage, userData.profilePic);
-                            const url = await getDownloadURL(picRef);
-                            userData.profilePic = url;
-                        } catch (error) {
-                            console.error("Error fetching profile picture:", error);
-                        }
+                if (userData.profilePic) {
+                    try {
+                        const picRef = ref(storage, userData.profilePic);
+                        const url = await getDownloadURL(picRef);
+                        userData.profilePic = url;
+                    } catch (error) {
+                        console.error("Error fetching profile picture:", error);
                     }
+                }
                 usersDataArray.push(userData);
             }
         }
         const groups = usersDataArray
             .map(obj => obj.group)
             .filter((group, index, self) => self.indexOf(group) === index)
-        
+
         setGroupsData(groups);
         setUserData(usersDataArray);
         setGroupBool(Array(groups.length).fill(false));
-        
+
     }
 
     const toggleGroupBool = (index: number) => {
@@ -73,7 +72,7 @@ export default function N0llanGrupper(){
         console.log(groupBool);
     }
 
-    async function showUserProfile(profilePic: string, name: string, funFact: string){
+    async function showUserProfile(profilePic: string, name: string, funFact: string) {
         togglePopUpBool();
         setPopUpPic(profilePic);
         setPopUpName(name);
@@ -85,16 +84,62 @@ export default function N0llanGrupper(){
         if (group == undefined) {
             return "some people have not been assinged groups!!"
         }
-        const groupUsers = userData.filter(user => {if (user.group == group) return user});
-        
-        return(<div key={group + "1"} className='flex items-center flex-col'>
-            <button onClick={() => toggleGroupBool(index)} className='bg-white text-black font-bold p-4 mt-4 rounded-lg w-1/3 whitespace-nowrap drop-shadow-lg outline outline-1 outline-black hover:bg-slate-200'>{group}</button>
-            <div className={`mt-2 gap-4 p-4  ${groupBool[index] ? "opacity-100" : "opacity-0 hidden"}`}>
-                <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-4">
+        const groupUsers = userData.filter(user => { if (user.group == group && !user.phosGroup) return user });
+        const phosUsers = userData.filter(user => { if (user.group == group && user.phosGroup != "KPH") return user });
+        const kphUsers = userData.filter(user => { if (user.group == group && user.phosGroup == "KPH") return user });
+
+        return (<div key={group + "1"} className='flex items-center flex-col mx-7 sm:mx-16 md:mx-32 lg:mx-64 xl:mx-96'>
+            <button onClick={() => toggleGroupBool(index)} className='bg-white text-black font-semibold text-xl mt-4 rounded-lg w-full py-4 whitespace-nowrap drop-shadow hover:bg-slate-200'>{group}</button>
+            <div className={`${groupBool[index] ? "opacity-100" : "opacity-0 hidden"}`}>
+                <h1 className="text-black whitespace-nowrap text-center text-lg bg-white my-5 py-1 drop-shadow rounded-lg">NØllan</h1>
+                <div className="grid grid-cols-3 gap-4 lg:grid-cols-4 2xl:grid-cols-5">
                     {groupUsers.map((user, index) => (
-                        <button onClick={() => showUserProfile(user.profilePic, user.name, user.funFact)} key={index} className="bg-white p-2 rounded-lg drop-shadow-lg  outline outline-1 outline-black hover:bg-slate-200">
-                            <img src={user.profilePic} alt={`User ${index + 1}`} className="w-full aspect-square rounded-lg outline outline-1 outline-black"/>
-                            <h1 className="text-black pt-2 whitespace-nowrap">{user.name}</h1>
+                        <button onClick={() => showUserProfile(user.profilePic, user.name, user.funFact)} key={index} className="bg-white p-2 rounded-lg drop-shadow hover:bg-slate-200">
+                            <img src={user.profilePic} alt={`User ${index + 1}`} className="w-full aspect-square rounded-lg" />
+                            <h1 className="text-black text-xs pt-2 whitespace-nowrap">{user.name}</h1>
+                        </button>
+                    ))}
+                    {/*TESTN0LLAN*/}
+                    <button className="bg-white p-2 rounded-lg drop-shadow hover:bg-slate-200">
+                        <img alt={`User ${index + 1}`} className="w-full aspect-square rounded-lg" />
+                        <h1 className="text-black text-xs pt-2 whitespace-nowrap">nØllan</h1>
+                    </button>
+                    <button className="bg-white p-2 rounded-lg drop-shadow hover:bg-slate-200">
+                        <img alt={`User ${index + 1}`} className="w-full aspect-square rounded-lg" />
+                        <h1 className="text-black text-xs pt-2 whitespace-nowrap">nØllan</h1>
+                    </button>
+                    <button className="bg-white p-2 rounded-lg drop-shadow hover:bg-slate-200">
+                        <img alt={`User ${index + 1}`} className="w-full aspect-square rounded-lg" />
+                        <h1 className="text-black text-xs pt-2 whitespace-nowrap">nØllan</h1>
+                    </button>
+                    <button className="bg-white p-2 rounded-lg drop-shadow hover:bg-slate-200">
+                        <img alt={`User ${index + 1}`} className="w-full aspect-square rounded-lg" />
+                        <h1 className="text-black text-xs pt-2 whitespace-nowrap">nØllan</h1>
+                    </button>
+                    <button className="bg-white p-2 rounded-lg drop-shadow hover:bg-slate-200">
+                        <img alt={`User ${index + 1}`} className="w-full aspect-square rounded-lg" />
+                        <h1 className="text-black text-xs pt-2 whitespace-nowrap">nØllan</h1>
+                    </button>
+                    <button className="bg-white p-2 rounded-lg drop-shadow hover:bg-slate-200">
+                        <img alt={`User ${index + 1}`} className="w-full aspect-square rounded-lg" />
+                        <h1 className="text-black text-xs pt-2 whitespace-nowrap">nØllan</h1>
+                    </button>
+
+                </div>
+                <h1 className="text-black whitespace-nowrap text-center text-lg bg-white my-5 py-1 drop-shadow rounded-lg">Bästisar</h1>
+                <div className="grid grid-cols-2 gap-4 mb-3 sm:mx-20 2xl:mx-64">
+                    {kphUsers.map((user, index) => (
+                        <button onClick={() => showUserProfile(user.profilePic, user.name, user.funFact)} key={index} className="bg-white p-2 rounded-lg drop-shadow hover:bg-slate-200">
+                            <img src={user.profilePic} alt={user.name} className="w-full aspect-square rounded-lg" />
+                            <h1 className="text-black text-xs pt-2 whitespace-nowrap">{user.name}</h1>
+                        </button>
+                    ))}
+                </div>
+                <div className="grid grid-cols-3 gap-4 2xl:mx-48">
+                    {phosUsers.map((user, index) => (
+                        <button onClick={() => showUserProfile(user.profilePic, user.name, user.funFact)} key={index} className="bg-white p-2 rounded-lg drop-shadow hover:bg-slate-200">
+                            <img src={user.profilePic} alt={`User ${index + 1}`} className="w-full aspect-square rounded-lg" />
+                            <h1 className="text-black text-xs pt-2 whitespace-nowrap">{user.name}</h1>
                         </button>
                     ))}
                 </div>
@@ -102,8 +147,8 @@ export default function N0llanGrupper(){
         </div>
         )
     }
-    
-    if (!user){ return <h1>Please login :|</h1>;}
+
+    if (!user) { return <h1>Please login :|</h1>; }
     return (
         <main className="min-h-screen bg-gradient-to-r from-[#A5CACE] to-[#4FC0A0]">
             <div>{groupsData.map((group, index) => groupSeparation(group, index))}</div>
@@ -111,13 +156,13 @@ export default function N0llanGrupper(){
                 <button onClick={test}>test</button>
             </div>
             <div onClick={togglePopUpBool} className='flex items-center justify-center '>
-            <div className={`fixed aspect-square text-center top-20 h-1/3 sm:h-2/5 drop-shadow-lg  ${popUpBool ? "" : "opacity-0 hidden"}`}>
-                <div className="bg-white p-8 rounded-lg shadow-lg outline outline-1 outline-black hover:bg-slate-200">
-                    <img src={popUpPic} className="w-full aspect-square rounded-lg outline outline-1 outline-black"/>
-                    <h1 className="text-black text-xl font-bold p-1">{popUpName}</h1>
-                    <h1 className= "text-black">Fun fact: {popUpFunFact}</h1>
+                <div className={`fixed aspect-square text-center top-20 h-1/3 sm:h-2/5 drop-shadow  ${popUpBool ? "" : "opacity-0 hidden"}`}>
+                    <div className="bg-white p-8 rounded-lg shadow-lg hover:bg-slate-200">
+                        <img src={popUpPic} className="w-full aspect-square rounded-lg" />
+                        <h1 className="text-black text-xl font-bold p-1">{popUpName}</h1>
+                        <h1 className="text-black">Fun fact: {popUpFunFact}</h1>
+                    </div>
                 </div>
-            </div>
             </div>
         </main>
     )
