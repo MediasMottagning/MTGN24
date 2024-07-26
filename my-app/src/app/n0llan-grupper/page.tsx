@@ -87,10 +87,15 @@ export default function N0llanGrupper() {
         const groupUsers = userData.filter(user => { if (user.group == group && !user.phosGroup) return user });
         const phosUsers = userData.filter(user => { if (user.group == group && user.phosGroup != "KPH") return user });
         const kphUsers = userData.filter(user => { if (user.group == group && user.phosGroup == "KPH") return user });
-
+        // transition-opacity duration-1000 ease-out opacity-20 hover:opacity-100
         return (<div key={group + "1"} className='flex items-center flex-col mx-7 sm:mx-16 md:mx-32 lg:mx-64 xl:mx-96'>
-            <button onClick={() => toggleGroupBool(index)} className='bg-white text-black font-semibold text-xl mt-4 rounded-lg w-full py-4 whitespace-nowrap drop-shadow hover:bg-slate-200'>{group}</button>
-            <div className={`${groupBool[index] ? "opacity-100" : "opacity-0 hidden"}`}>
+            <button onClick={() => toggleGroupBool(index)} className='bg-white text-black font-normal text-xl mt-4 rounded-lg w-full py-4 whitespace-nowrap drop-shadow hover:bg-slate-200'>{group}
+                <div className='text-right pr-3 pb-3 h-2'>
+                    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+                    {groupBool[index] ? <i className="material-symbols-outlined">keyboard_arrow_up</i> : <i className="material-symbols-outlined">keyboard_arrow_down</i>}
+                </div>
+            </button>
+            <div className={`transition duration-300 ease-in-out ${groupBool[index] ? "opacity-100" : "opacity-0 hidden"}`}>
                 <h1 className="text-black whitespace-nowrap text-center text-lg bg-white my-5 py-1 drop-shadow rounded-lg">NØllan</h1>
                 <div className="grid grid-cols-3 gap-4 lg:grid-cols-4 2xl:grid-cols-5">
                     {groupUsers.map((user, index) => (
@@ -153,7 +158,7 @@ export default function N0llanGrupper() {
         <main className="min-h-screen bg-gradient-to-r from-[#A5CACE] to-[#4FC0A0]">
             <div>{groupsData.map((group, index) => groupSeparation(group, index))}</div>
             <div>
-                <button onClick={test}>test</button>
+                <button onClick={test} className='transition-opacity duration-1000 ease-out opacity-20 hover:opacity-100'>test</button>
             </div>
             <div onClick={togglePopUpBool} className='flex items-center justify-center '>
                 <div className={`fixed aspect-square text-center top-20 h-1/3 sm:h-2/5 drop-shadow  ${popUpBool ? "" : "opacity-0 hidden"}`}>
