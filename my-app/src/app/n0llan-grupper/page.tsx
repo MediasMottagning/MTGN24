@@ -95,7 +95,7 @@ export default function N0llanGrupper() {
                     {groupBool[index] ? <i className="material-symbols-outlined">keyboard_arrow_up</i> : <i className="material-symbols-outlined">keyboard_arrow_down</i>}
                 </div>
             </button>
-            <div className={`transition duration-300 ease-in-out ${groupBool[index] ? "opacity-100" : "opacity-0 hidden"}`}>
+            <div className={`transition-all delay-150 duration-200 overflow-hidden w-full ${groupBool[index] ? "max-h-[200rem]" : "max-h-0"}`}> {/* KANSKE MÅSTE ÄNDRA VÄRDE PÅ max-h- beroende på hur många som kommer visas upp i animationen */}
                 <h1 className="text-black whitespace-nowrap text-center text-lg bg-white my-5 py-1 drop-shadow rounded-lg">NØllan</h1>
                 <div className="grid grid-cols-3 gap-4 lg:grid-cols-4 2xl:grid-cols-5">
                     {groupUsers.map((user, index) => (
