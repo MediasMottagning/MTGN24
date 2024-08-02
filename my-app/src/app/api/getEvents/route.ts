@@ -14,7 +14,6 @@ export async function GET(req: NextRequest) {
         if (!decodedToken) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
-
         const bucket = storage.bucket("mottagningen-7063b.appspot.com");
         const options = {
             prefix: 'events/',
