@@ -29,12 +29,16 @@ export default function Header() {
             <div className={`absolute top-full right-0 mt-2 w-full bg-white shadow-md z-10 flex flex-col items-center gap-4 p-4 transition-opacity duration-300 portrait:flex ${isMenuOpen ? "opacity-100 portrait:block" : "opacity-0 hidden portrait:hidden"}`}>
                 <Link href="/profil" className="py-2 text-blue-500 hover:text-blue-700" onClick={closeMenu}>Profil</Link>
                 <Link href="/event" className="py-2 text-blue-500 hover:text-blue-700" onClick={closeMenu}>Event</Link>
+                <Link href="/n0llan-grupper" className="py-2 text-blue-500 hover:text-blue-700" onClick={closeMenu}>n0llan</Link>
+                <Link href="/phosar-grupper" className="py-2 text-blue-500 hover:text-blue-700" onClick={closeMenu}>Phösare</Link>
                 <LogoutButton onClose={closeMenu} />
             </div>
             {/* landscape menu, computer*/}
             <div className="hidden landscape:flex items-center gap-4">
                 <Link href="/profil" className="text-blue-500 hover:text-blue-700">Profil</Link>
                 <Link href="/event" className="text-blue-500 hover:text-blue-700">Event</Link>
+                <Link href="/n0llan-grupper" className="text-blue-500 hover:text-blue-700">n0llan</Link>
+                <Link href="/phosar-grupper" className="text-blue-500 hover:text-blue-700">Phösare</Link>
                 <LogoutButton />
             </div>
         </header>

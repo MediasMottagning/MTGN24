@@ -56,15 +56,15 @@ export default function Event() {
     }
 
     return (
-        <main className="flex min-h-screen flex-col items-center justify-between p-24">
+        <main className="min-h-screen bg-gradient-to-r from-[#A5CACE] to-[#4FC0A0]">
             <h1 className="text-4xl font-bold text-center">EVENTS</h1>
-            <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
+            <div className='flex items-center flex-col mx-7 sm:mx-16 md:mx-32 lg:mx-64 xl:mx-96'>
                 {events.map(event => (
                     <div key={event.event}>
                         <Link href={`/event/${event.event}`}>
-                            <h2 style={{ cursor: 'pointer' }}>{event.event}</h2>
+                            <h2 className='bg-white text-black font-normal text-center text-xl mt-4 rounded-lg w-full py-4 whitespace-nowrap drop-shadow hover:bg-slate-200' style={{ cursor: 'pointer' }}>{event.event}</h2>
                         </Link>
-                        <div>
+                        <div className="grid grid-cols-3 gap-4 lg:grid-cols-4 2xl:grid-cols-5">
                             {event.imageUrls.slice(1).map((url, index) => (
                                 <img 
                                     key={index} 
