@@ -3,6 +3,7 @@ import { Inter, Rubik } from "next/font/google";
 import "./globals.css";
 import Header from "./components/Header";
 import { AuthProvider } from "./components/useAuth";
+import Footer from "./components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 const rubik = Rubik({ subsets: ["latin"] });
@@ -23,6 +24,7 @@ export default function RootLayout({
         <body className={"max-w-full " + rubik.className}>
           <Header />
           {children}
+          <Footer/>
         </body>
       </html>
     </AuthProvider>
