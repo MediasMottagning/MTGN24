@@ -16,6 +16,26 @@ import { NextRequest, NextResponse } from "next/server";
 const gasqueImage = "/gasqueImg.png";
 const homeGradient = "/homeGradient.jpg"
 
+
+/**
+ * 
+ * @param event An event object from the Google Calendar API
+ * @returns {string} A string describing the price of the event such as "100 kr" or "Gratis"
+ */
+function parseEventPrice(event: any): string {
+    if (event.description) {
+        const priceRegex = /(?<=Pris: )\d+/;
+        const match = event.description.match(priceRegex);
+        if (match) {
+            return `${match[0]} kr`;
+        } else {
+            return "Gratis";
+        }
+    } else { // no description set for the event
+        return "Gratis";
+    }
+}
+
 /**
  * 
  * @param dateTime A string such as "2024-08-18T10:15:00+02:00"
@@ -84,7 +104,7 @@ export default function Home(request: NextRequest, response: NextResponse) {
             if (response.ok) {
                 const data = await response.json();
                 setEvents(data.items);
-            }  
+            }
         };
         fetchNextEvents();
 
@@ -117,8 +137,7 @@ export default function Home(request: NextRequest, response: NextResponse) {
                                 title={event.summary}
                                 time={formatDateTime(event.start.dateTime)}
                                 location={event.location}
-                                costs="150 kr"
-                                image=""
+                                costs={parseEventPrice(event)}
                                 />
                         );
                     })}
