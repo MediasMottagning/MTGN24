@@ -1,7 +1,7 @@
 // firebaseConfig.js
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
-import { getAuth, Auth, browserLocalPersistence, setPersistence } from 'firebase/auth';
+import { getAuth, Auth, browserLocalPersistence, setPersistence, EmailAuthProvider } from 'firebase/auth';
 import { getStorage } from 'firebase/storage';
 
 // Your web app's Firebase configuration
@@ -24,11 +24,13 @@ const auth: Auth = getAuth(app);
 // Set the local persistence to the browser
 setPersistence(auth, browserLocalPersistence);
 
-
 // Initialize Firestore
 const db = getFirestore(app);
 
 // Initialize Storage
 const storage = getStorage(app);
 
-export { db, auth, storage };
+// Initialize EmailAuthProvider
+const provider = new EmailAuthProvider();
+
+export { db, auth, storage, provider};

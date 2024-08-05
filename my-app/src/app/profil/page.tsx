@@ -3,8 +3,8 @@
 import { FormEvent, useEffect, useState } from 'react';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { getStorage, ref, getDownloadURL } from "firebase/storage"; // for profile pic
-import { getAuth, updatePassword } from "firebase/auth";
-import { db } from '../lib/firebaseConfig';
+import { getAuth, onAuthStateChanged, updatePassword } from "firebase/auth";
+import { db, auth } from '../lib/firebaseConfig';
 import LogoutButton from "../components/LogoutBtn";
 import useAuth from "../components/useAuth";
 import { Montserrat_Alternates } from 'next/font/google';
@@ -20,21 +20,50 @@ const Home = () => {
     // admin check vars
     const [isAdmin, setIsAdmin] = useState(false);
     const [loading, setLoading] = useState(true);
+    
     // check if user is admin
     useEffect(() => {
-      const checkAdminStatus = async () => {
-        if (user) {
-          const currentUserDoc = await getDoc(doc(db, "users", user.uid));
-          const currentUserData = currentUserDoc.data();
-          setIsAdmin(currentUserData?.isAdmin || false);
-        }
-        setLoading(false);
-      };
-  
-      checkAdminStatus();
-    }, [user]);
-
+        const checkAdminStatus = async () => {
+          const auth = getAuth();
+          onAuthStateChanged(auth, async (user) => {
+            // get user auth token and send to API endpoint /api/isAdmin
+            if (user) {
+              try {
+                const idToken = await user.getIdToken();
+                const response = await fetch('/api/isAdmin', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${idToken}`,
+                  },
+                });
+    
+                if (!response.ok) {
+                  // Error response from the server, only for debugging
+                  console.error('Response error:', response.status, response.statusText);
+                  const errorText = await response.text(); 
+                  console.error('Response text:', errorText);
+                  throw new Error('Failed to fetch admin status');
+                }
+    
+                const data = await response.json();
+                setIsAdmin(data.isAdmin);
+                console.log("Admin status:", data.isAdmin);
+              } catch (error) {
+                console.error('Error:', error);
+              } finally {
+                setLoading(false);
+              }
+            } else {
+              setLoading(false); // set loading to false if user is not admin
+            }
+          });
+        };
+    
+        checkAdminStatus();
+      }, []); // run only once
     // fetch the fun fact from the users profile on firestore
+    /* OM NÅGON HAR TID ÄNDRA DENNA FUNKTION SÅ ATT DET BLIR EN FETCH METOD SOM KALLAR PÅ EN API ENDPOINT ISTÄLLET*/
     useEffect(() => {
         if (user) {
             const fetchUserData = async () => {

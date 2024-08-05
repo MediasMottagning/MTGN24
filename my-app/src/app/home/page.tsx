@@ -9,86 +9,91 @@ import LogoutButton from "../components/LogoutBtn";
 import useAuth from "../components/useAuth";
 import { set } from "firebase/database";
 import { Post } from "../lib/definitions";
+import EventCard from "../components/EventCard";
+import AnslagCard from "../components/AnslagCard";
+import { NextRequest, NextResponse } from "next/server";
 
-async function getCollectionData() {
-  const querySnapshot = await getDocs(collection(db, "users"));
-  querySnapshot.forEach((doc) => {
-    console.log(`${doc.id} => ${doc.data().username}`);
-  });
-}
-// get posts from firestore
-const getPosts = async (): Promise<Post[]> => {
-  const postsSnapshot = await getDocs(collection(db, "posts"));
-  const postsData = postsSnapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-  })) as Post[];
-  return postsData;
-};
+const gasqueImage = "/gasqueImg.png";
+const homeGradient = "/homeGradient.jpg"
 
-export default function Home() {
-  // check if user is logged in
-  const { user } = useAuth();
 
-  // get posts from firestore
-  const [posts, setPosts] = useState<Post[]>([]);
-  useEffect(() => {
-    const fetchPosts = async () => {
-      const postsArray = await getPosts();
-      setPosts(postsArray);
-    };
-    fetchPosts();
-  }, []);
+export default function Home(request: NextRequest, response: NextResponse) {
+    // check if user is logged in
+    const { user } = useAuth();
 
-  // if user is not logged in, redirect to login page
-  if (!user) {
-    return <h1>Please login</h1>;
-  }
+    const [posts, setPosts] = useState<Post[]>([]);
+    
+    useEffect(() => {
+        
+        const fetchPostsData = async () => {
+            // if user is not logged in, redirect to login page
+            if (!user){ return <h1>Please login</h1>;}
+            const token = await user.getIdToken();
+            const response = await fetch('/api/getPosts', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                const sortedPosts = data.posts.sort((a: Post, b: Post) => { // Sort posts by when they were created. Newest first.
+                    const createdAt_A = new Date(a.createdAt);
+                    const createdAt_B = new Date(b.createdAt);
+                    return createdAt_B.getTime() - createdAt_A.getTime();
+                });
+                setPosts(sortedPosts);
+            }
+            
+        };
 
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <h1 className="text-4xl font-bold text-center">Posts</h1>
-      <div className="grid grid-cols-1 gap-4 mt-8">
-        {posts.map((post) => (
-          <div key={post.id} className="border p-4 rounded shadow">
-            <h2 className="text-2xl font-bold">{post.title}</h2>
-            <p>{post.post}</p>
-          </div>
-        ))}
-      </div>
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <button
-          onClick={getCollectionData}
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Print shit{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            BIIIIIIIIIIIIG TESET.
-          </p>
-        </button>
+        fetchPostsData();
+    }, [user]);
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+    useEffect(() => {
+        // Log posts after they have been set
+        console.log(posts);
+
+    }, [posts]);
+
+    return (
+        <main className="flex min-h-screen flex-col items-center bg-gradient-to-r from-[#A5CACE] to-[#4FC0A0]">
+            <div className="flex w-11/12 flex-col mt-5 md:mt-9 max-w-2xl"> {/* EVENT MODULE */}
+                <div className="flex flex-row">
+                    <p className="font-semibold text-lg sm:text-2xl ml-1">Nästa event</p>
+                    <p className="text-2xl sm:text-3xl ml-1">🥳</p>
+                </div>
+                <div className="flex flex-col space-y-5">
+                    <EventCard title="Neverland Gasque"
+                                time="Fredag 18:00"
+                                location="META"
+                                costs="150 kr"
+                                image={gasqueImage}/>
+
+                    <EventCard title="Rundvandringen"
+                                time="Måndag 09:00"
+                                location="Borggården"
+                                costs=""
+                                image=""/>
+                </div>
+            </div>
+            <div className="flex w-11/12 flex-col mt-5 md:mt-9 max-w-2xl mb-5"> {/* EVENT MODULE */}
+            <div className="flex flex-row">
+                    <p className="font-semibold text-lg sm:text-2xl pl-1">Senaste anslag</p>
+                    <p className="text-2xl sm:text-3xl ml-1">📣</p>
+                </div>
+                
+                <div className="flex flex-col space-y-5">
+                    {posts.slice(0, 3).map((post) => { // Render only the first x elements in 'posts'
+                        return (
+                            <AnslagCard key={post.id}
+                                title={post.title}
+                                description={post.description}
+                                createdAt={post.createdAt}/>
+                        );
+                    })}
+                </div>
+            </div>
+        </main>
+    );
 }
