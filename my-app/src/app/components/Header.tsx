@@ -1,21 +1,20 @@
-"use client"
-import React, { useState } from 'react';
-import LogoutButton from './LogoutBtn';
-import Link from 'next/link';
+"use client";
+import React, { useState } from "react";
+import LogoutButton from "./LogoutBtn";
+import Link from "next/link";
 
 export default function Header() {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    // toggle dropdown menu visibility
-    const toggleMenu = () => {
-        setIsMenuOpen(!isMenuOpen);
-    };
+  // toggle dropdown menu visibility
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
 
-    // close dropdown menu when a link is clicked
-    const closeMenu = () => {
-        setIsMenuOpen(false);
-    };
-
+  // close dropdown menu when a link is clicked
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
     return (
         <header className="flex justify-between items-center p-4 relative">
             <Link href="/home" className="text-2xl font-bold" onClick={closeMenu}>My App</Link>
