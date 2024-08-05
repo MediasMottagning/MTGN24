@@ -17,12 +17,60 @@ const gasqueImage = "/gasqueImg.png";
 const homeGradient = "/homeGradient.jpg"
 
 
+/**
+ * 
+ * @param event An event object from the Google Calendar API
+ * @returns {string} A string describing the price of the event such as "100 kr" or "Gratis"
+ */
+function parseEventPrice(event: any): string {
+    if (event.description) {
+        const priceRegex = /(?<=Pris: )\d+/;
+        const match = event.description.match(priceRegex);
+        if (match) {
+            return `${match[0]} kr`;
+        } else {
+            return "Gratis";
+        }
+    } else { // no description set for the event
+        return "Gratis";
+    }
+}
+
+/**
+ * 
+ * @param dateTime A string such as "2024-08-18T10:15:00+02:00"
+ * @returns {string} A string such as "10:15 Söndag"
+ */
+function formatDateTime(dateTime: string): string {
+
+    const weekdayMap: { [key: number]: string } = {
+        1: "Måndag",
+        2: "Tisdag",
+        3: "Onsdag",
+        4: "Torsdag",
+        5: "Fredag",
+        6: "Lördag",
+        0: "Söndag",  
+    };
+
+    const dateObj = new Date(dateTime);
+
+    const hours = dateObj.getHours().toString().padStart(2, '0');
+    const minutes = dateObj.getMinutes().toString().padStart(2, '0');
+    const weekday = weekdayMap[dateObj.getDay()];
+
+    return `${hours}:${minutes} ${weekday}`;
+}
+
+
 export default function Home(request: NextRequest, response: NextResponse) {
     // check if user is logged in
     const { user } = useAuth();
 
     const [posts, setPosts] = useState<Post[]>([]);
+    const [events, setEvents] = useState<any[]>([]);
     
+
     useEffect(() => {
         
         const fetchPostsData = async () => {
@@ -46,35 +94,53 @@ export default function Home(request: NextRequest, response: NextResponse) {
             }
             
         };
-
         fetchPostsData();
+
+        const fetchNextEvents = async () => {
+           
+            const response = await fetch('/api/getCalendarEvents', {
+                method: 'GET',
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setEvents(data.items);
+            }
+        };
+        fetchNextEvents();
+
     }, [user]);
 
     useEffect(() => {
-        // Log posts after they have been set
+        console.log("Posts");
         console.log(posts);
 
     }, [posts]);
 
+    useEffect(() => {
+        console.log("Events");
+        console.log(events);
+
+    }, [events]);
+
     return (
         <main className="flex min-h-screen flex-col items-center bg-gradient-to-r from-[#A5CACE] to-[#4FC0A0]">
+            <script src="https://apis.google.com/js/api.js" type="text/javascript"></script>
             <div className="flex w-11/12 flex-col mt-5 md:mt-9 max-w-2xl"> {/* EVENT MODULE */}
                 <div className="flex flex-row">
                     <p className="font-semibold text-lg sm:text-2xl ml-1">Nästa event</p>
                     <p className="text-2xl sm:text-3xl ml-1">🥳</p>
                 </div>
                 <div className="flex flex-col space-y-5">
-                    <EventCard title="Neverland Gasque"
-                                time="Fredag 18:00"
-                                location="META"
-                                costs="150 kr"
-                                image={gasqueImage}/>
-
-                    <EventCard title="Rundvandringen"
-                                time="Måndag 09:00"
-                                location="Borggården"
-                                costs=""
-                                image=""/>
+                    {events.map((event) => {
+                        return (
+                            <EventCard key={event.id}
+                                title={event.summary}
+                                time={formatDateTime(event.start.dateTime)}
+                                location={event.location}
+                                costs={parseEventPrice(event)}
+                                />
+                        );
+                    })}
                 </div>
             </div>
             <div className="flex w-11/12 flex-col mt-5 md:mt-9 max-w-2xl mb-5"> {/* EVENT MODULE */}
