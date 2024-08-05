@@ -1,10 +1,10 @@
-'use client'
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
-import { FormEvent, use, useEffect, useState } from 'react';
-import { db} from '../lib/firebaseConfig';
-import { collection, getDocs } from 'firebase/firestore';
+import { FormEvent, use, useEffect, useState } from "react";
+import { db } from "../lib/firebaseConfig";
+import { collection, getDocs } from "firebase/firestore";
 import LogoutButton from "../components/LogoutBtn";
 import useAuth from "../components/useAuth";
 import { set } from "firebase/database";

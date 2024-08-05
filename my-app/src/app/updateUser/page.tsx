@@ -77,27 +77,27 @@ const UpdateUser = () => {
   const setAdmin = async (event: FormEvent) => {
     event.preventDefault();
     try {
-      const response = await fetch('/api/setAdmin', {
-        method: 'POST',
+      const response = await fetch("/api/setAdmin", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ uid }),
       });
 
       if (!response.ok) {
         console.error("HTTP error", response.status);
-        alert('Failed to set admin: ' + response.statusText);
+        alert("Failed to set admin: " + response.statusText);
         return;
       }
 
       const data = await response.json();
-      console.log('Success:', data);
-      alert('User is now an admin.');
+      console.log("Success:", data);
+      alert("User is now an admin.");
     } catch (error) {
       if (error instanceof Error) {
-        console.error('Error:', error.message);
-        alert('Failed to set admin: ' + error.message);
+        console.error("Error:", error.message);
+        alert("Failed to set admin: " + error.message);
       }
     }
   };
@@ -105,27 +105,27 @@ const UpdateUser = () => {
   const handleSubmitName = async (event: FormEvent) => {
     event.preventDefault();
     try {
-      const response = await fetch('/api/updateDisplayName', {
-        method: 'POST',
+      const response = await fetch("/api/updateDisplayName", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ uid, displayName }),
       });
 
       if (!response.ok) {
         console.error("HTTP error", response.status);
-        alert('Failed to update user: ' + response.statusText);
+        alert("Failed to update user: " + response.statusText);
         return;
       }
 
       const data = await response.json();
-      console.log('Success:', data);
-      alert('User updated successfully!');
+      console.log("Success:", data);
+      alert("User updated successfully!");
     } catch (error) {
       if (error instanceof Error) {
-        console.error('Error:', error);
-        alert('Failed to update user: ' + error.message);
+        console.error("Error:", error);
+        alert("Failed to update user: " + error.message);
       }
     }
   };
@@ -134,7 +134,7 @@ const UpdateUser = () => {
     event.preventDefault();
     if (image && uid) {
       if (!isAdmin) {
-        alert('You are not authorized to perform this action.');
+        alert("You are not authorized to perform this action.");
         return;
       }
 
@@ -147,20 +147,26 @@ const UpdateUser = () => {
             profilePic: gsUrl,
           });
         } catch (error) {
-          if(error instanceof Error) {
-            console.error('Error updating profile picture URL in Firestore: ', error);
-            alert('Failed to update profile picture URL in Firestore: ' + error.message);
+          if (error instanceof Error) {
+            console.error(
+              "Error updating profile picture URL in Firestore: ",
+              error
+            );
+            alert(
+              "Failed to update profile picture URL in Firestore: " +
+                error.message
+            );
           }
         }
-        alert('Profile picture updated successfully!');
+        alert("Profile picture updated successfully!");
       } catch (error) {
-        if(error instanceof Error){
-          console.error('Error uploading image: ', error);
-          alert('Failed to upload image: ' + error.message);
+        if (error instanceof Error) {
+          console.error("Error uploading image: ", error);
+          alert("Failed to upload image: " + error.message);
         }
       }
     } else {
-      alert('Please provide both a user ID and a profile picture.');
+      alert("Please provide both a user ID and a profile picture.");
     }
   };
   // upload posts
@@ -253,43 +259,56 @@ const UpdateUser = () => {
       </form>
 
       <form onSubmit={handleSubmitName}>
-        <h1 className={`mb-3 text-2xl font-semibold`}>Update User DisplayName</h1>
-        <label htmlFor="uid">User ID:
+        <h1 className={`mb-3 text-2xl font-semibold`}>
+          Update User DisplayName
+        </h1>
+        <label htmlFor="uid">
+          User ID:
           <input
             className="border border-gray-300 rounded-lg p-2 text-black"
             type="text"
             id="uid"
             value={uid}
-            onChange={e => setUid(e.target.value)}
+            onChange={(e) => setUid(e.target.value)}
             required
           />
         </label>
-        <label htmlFor="displayName">Display Name:
+        <label htmlFor="displayName">
+          Display Name:
           <input
             className="border border-gray-300 rounded-lg p-2 text-black"
             type="text"
             id="displayName"
             value={displayName}
-            onChange={e => setDisplayName(e.target.value)}
+            onChange={(e) => setDisplayName(e.target.value)}
             required
           />
         </label>
-        <button className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30" type="submit">Update User</button>
+        <button
+          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
+          type="submit"
+        >
+          Update User
+        </button>
       </form>
 
       <form onSubmit={handleUpload}>
-        <h1 className={`mb-3 text-2xl font-semibold`}>Update User ProfilePic</h1>
-        <label htmlFor="uid">User ID:
+        <h1 className={`mb-3 text-2xl font-semibold`}>
+          Update User ProfilePic
+        </h1>
+        <label htmlFor="uid">
+          User ID:
           <input
             className="border border-gray-300 rounded-lg p-2 text-black"
             type="text"
             id="uid"
             value={uid}
-            onChange={e => setUid(e.target.value)}
+            onChange={(e) => setUid(e.target.value)}
             required
           />
         </label>
-        <label htmlFor="profilePicture">Profile Picture:
+        <label htmlFor="profilePicture">
+          Profile Picture:
           <input
             className="border border-gray-300 rounded-lg p-2 text-black"
             type="file"
@@ -298,22 +317,33 @@ const UpdateUser = () => {
             required
           />
         </label>
-        <button className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30" type="submit">Update User</button>
+        <button
+          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
+          type="submit"
+        >
+          Update User
+        </button>
       </form>
 
       <form onSubmit={setAdmin}>
         <h1 className={`mb-3 text-2xl font-semibold`}>Set User as Admin</h1>
-        <label htmlFor="uid">User ID:
+        <label htmlFor="uid">
+          User ID:
           <input
             className="border border-gray-300 rounded-lg p-2 text-black"
             type="text"
             id="uid"
             value={uid}
-            onChange={e => setUid(e.target.value)}
+            onChange={(e) => setUid(e.target.value)}
             required
           />
         </label>
-        <button className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30" type="submit">Set Admin</button>
+        <button
+          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
+          type="submit"
+        >
+          Set Admin
+        </button>
       </form>
     </>
   );
