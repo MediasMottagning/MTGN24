@@ -1,5 +1,3 @@
-import "./calandar.css";
-
 export default function Calandar() {
   return (
     <div className="center">
@@ -16,13 +14,6 @@ export default function Calandar() {
         type="module"
         src="https://embed.styledcalendar.com/assets/parent-window.js"
       ></script>
-      <iframe
-        src="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Europe%2FStockholm&bgcolor=%23ffffff&src=ZmIzNGYxMjQxNTdmODNkYjNjMDM4ZWU3NTk3MWJmMjZiM2Y0ZjQyYWE0NGMxZDlkNDU3MWFhMjEzOTg1NzNhMkBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%238E24AA"
-        style={{ border: "solid 1px #777" }}
-        width="800"
-        height="600"
-        scrolling="no"
-      ></iframe>
     </div>
   );
 }

@@ -5,11 +5,8 @@ import React, { useState } from "react";
 const bandaren = () => {
   let [src, setSrc] = useState("");
   const blandareSrc = [
-    "https://drive.google.com/file/d/1JPa7dWMnDWhr2SQGAxBmsu2_V7wrA1eK/preview",
-    "https://drive.google.com/file/d/1qxA7i03r321s75o40tkikrfBcV1yZCFS/preview",
-    "https://drive.google.com/file/d/13-T1G_GvUnaoNuar0Tu0nCMESF_NOG30/preview",
-    "https://drive.google.com/file/d/1ki9EqjMnet-W0SngkLTb_-FzzteRPn9D/preview",
-    "https://drive.google.com/file/d/1jj7NWLqLNXlSvGQPZbUCWWQrfHTY8aIo/preview",
+    "https://drive.google.com/file/d/1igX4a-LWrupoznZTFC278uVrZITXJdFX/preview",
+    "https://drive.google.com/file/d/1lUKOaq8uIg9T8lFDywh-nYtb5dqapLGM/preview",
   ];
   return (
     <div>
