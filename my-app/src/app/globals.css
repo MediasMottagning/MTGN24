@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
@@ -9,6 +10,7 @@
     --background-end-rgb: 0, 0, 0;
   }
 }
+*/
 
 .debug {
   border-style: dotted;
