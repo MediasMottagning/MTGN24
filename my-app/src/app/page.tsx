@@ -48,8 +48,10 @@ const Home: React.FC = () => {
   };
 
   return (
-    <main>
+    <main className="min-h-screen bg-gradient-to-r from-[#A5CACE] to-[#4FC0A0]">
+      <div className='flex items-center justify-center'>
       <form onSubmit={handleSignIn}>
+        <div>
         <input
           className="border border-gray-300 rounded-lg p-2 text-black"
           type="text"
@@ -58,6 +60,8 @@ const Home: React.FC = () => {
           placeholder="Username"
           required
         />
+        </div>
+        <div>
         <input
           className="border border-gray-300 rounded-lg p-2 text-black"
           type="password"
@@ -66,8 +70,10 @@ const Home: React.FC = () => {
           placeholder="Password"
           required
         />
+        </div>
         <button type="submit" disabled={isDisabled}>Login</button>
       </form>
+      </div>
     </main>
   );
 };
