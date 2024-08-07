@@ -10,6 +10,10 @@ const nextConfig = {
     
         return config;
       },
+      // This is required to allow nextjs to use the images from firebase storage using the nextjs14 component Images
+      images: {
+        domains: ['storage.googleapis.com'],
+    },
 };
 
 export default nextConfig;
