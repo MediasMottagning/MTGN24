@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ error: 'No files found for this event' }, { status: 404 });
         }
 
-        console.log(`Found ${eventFiles.length} files for event: ${event}`);
+        //console.log(`Found ${eventFiles.length} files for event: ${event}`);
         const eventImagePromises = eventFiles.map(file =>
             file.getSignedUrl({
                 action: 'read',

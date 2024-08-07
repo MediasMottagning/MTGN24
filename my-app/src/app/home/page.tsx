@@ -138,7 +138,8 @@ export default function Home(request: NextRequest, response: NextResponse) {
                                 time={formatDateTime(event.start.dateTime)}
                                 location={event.location}
                                 costs={parseEventPrice(event)}
-                                />
+                                image={event.pictureUrl}
+                            />
                         );
                     })}
                 </div>
