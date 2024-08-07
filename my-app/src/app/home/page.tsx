@@ -158,6 +158,7 @@ export default function Home(request: NextRequest, response: NextResponse) {
                                 costs={parseEventDescription("Kostar:", event.description)}
                                 description={parseEventDescription("Beskrivning:", event.description)}
                                 />
+                            />
                         );
                     })}
                 </div>
