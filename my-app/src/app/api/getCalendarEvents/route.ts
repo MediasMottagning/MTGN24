@@ -1,4 +1,4 @@
-import { google } from "googleapis"; // Using this import requires disabling 'net' in the webpack config (see next.config.js)
+const google = require('@googleapis/calendar') // Using this import requires disabling 'net' in the webpack config (see next.config.js)
 import { NextResponse } from "next/server";
 
 
