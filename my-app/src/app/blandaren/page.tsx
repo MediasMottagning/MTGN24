@@ -9,7 +9,7 @@ const bandaren = () => {
     "https://drive.google.com/file/d/1lUKOaq8uIg9T8lFDywh-nYtb5dqapLGM/preview",
   ];
   return (
-    <div>
+    <div className="flexbox-container">
       {blandareSrc.map((item, index) => (
         <button
           className="btn bg-blue-600 active:bg-blue-700 focus:ring-white text-white font-semibold py-2 px-4  hover:border-transparent rounded focus:ring"
