@@ -157,8 +157,8 @@ export default function Home(request: NextRequest, response: NextResponse) {
                                 location={event.location}
                                 costs={parseEventDescription("Kostar:", event.description)}
                                 description={parseEventDescription("Beskrivning:", event.description)}
+                                image={event.pictureUrl}
                                 />
-                            />
                         );
                     })}
                 </div>
