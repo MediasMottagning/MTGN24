@@ -70,7 +70,7 @@ export async function GET() {
             const pictureUrl = location ? eventPicsMap[location] : null;
             return {
                 ...event,
-                pictureUrl: pictureUrl || '/Loke_i_Dubrovnik.png'
+                pictureUrl: pictureUrl || ""
             };
         });
         return NextResponse.json({ items });

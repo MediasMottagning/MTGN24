@@ -12,6 +12,7 @@ import { Post } from "../lib/definitions";
 import EventCard from "../components/EventCard";
 import AnslagCard from "../components/AnslagCard";
 import { NextRequest, NextResponse } from "next/server";
+import EmojiModal from "../components/EmojiModal";
 
 const gasqueImage = "/gasqueImg.png";
 const homeGradient = "/homeGradient.jpg"
@@ -140,8 +141,16 @@ export default function Home(request: NextRequest, response: NextResponse) {
 
     }, [events]);
 
+    const [showModal, setShowModal] = useState(false);
+    
+    function toggleModal() { // Is passed to EventCard as a prop
+        console.log("Toggling modal");
+        setShowModal(!showModal);   
+        console.log(showModal);
+    }
+
     return (
-        <main className="flex min-h-screen flex-col items-center bg-gradient-to-r from-[#A5CACE] to-[#4FC0A0]">
+        <main className="flex min-h-screen min-w-72 flex-col items-center bg-gradient-to-r from-[#A5CACE] to-[#4FC0A0]">
             <script src="https://apis.google.com/js/api.js" type="text/javascript"></script>
             <div className="flex w-11/12 flex-col mt-5 md:mt-9 max-w-2xl"> {/* EVENT MODULE */}
                 <div className="flex flex-row">
@@ -158,6 +167,7 @@ export default function Home(request: NextRequest, response: NextResponse) {
                                 costs={parseEventDescription("Kostar:", event.description)}
                                 description={parseEventDescription("Beskrivning:", event.description)}
                                 image={event.pictureUrl}
+                                onModalClick={toggleModal}
                                 />
                         );
                     })}
@@ -180,6 +190,7 @@ export default function Home(request: NextRequest, response: NextResponse) {
                     })}
                 </div>
             </div>
+            {showModal && <EmojiModal onCloseClick={toggleModal} />}
         </main>
     );
 }
