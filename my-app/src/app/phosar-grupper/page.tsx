@@ -19,6 +19,27 @@ export default function N0llanGrupper() {
     const { user } = useAuth();
     const storage = getStorage();
 
+    // NEW CODE
+    const [users, setUsers] = useState([]);
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await fetch('/api/getUsers');
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Users:', data);
+                    setUsers(data);
+                } else {
+                    console.error('Failed to fetch users');
+                }
+            } catch (error) {
+                console.error('Error fetching users:', error);
+            }
+        };
+
+        fetchUsers();
+    }, []);
+/*OLD CODE
     useEffect(() => {
         if (user) {
             getCollectionData();
@@ -54,6 +75,7 @@ export default function N0llanGrupper() {
         setGroupBool(Array(groups.length).fill(false));
 
     }
+OLD CODE END*/
 
     const toggleGroupBool = (index: number) => {
         setGroupBool(prevState => {
