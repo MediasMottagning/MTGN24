@@ -21,7 +21,7 @@ export default function N0llanGrupper() {
 
  
     /* CODE FOR FETCHTING n0llan */
-    const [users, setUsers] = useState([]);
+    const [users, setUsers] = useState<{ group: string }[]>([]);
     useEffect(() => {
         const fetchUsers = async () => {
             if (!user){ return <h1>Please login</h1>;}

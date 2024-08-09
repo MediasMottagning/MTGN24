@@ -7,7 +7,6 @@ import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import Image from 'next/image';
 
 export default function PhosarGrupper() {
-
     const [groupBool, setGroupBool] = useState<boolean[]>([]);
     const [groupsData, setGroupsData] = useState<string[]>([]);
     const [userData, setUserData] = useState<DocumentData[]>([]);
@@ -84,7 +83,9 @@ export default function PhosarGrupper() {
         if (group == undefined) {
             return 
         }
-        const phosUsers = userData.filter(user => { if (user.phosGroup == group) return user });
+        // Grouping phosare into their respective groups and electus
+        const phosUsers = userData.filter(user => { if (user.phosGroup == group && !user.isElectus) return user });
+        const electusUsers = userData.filter(user => { if (user.phosGroup == group && user.isElectus) return user });
 
         return (
         <div key={group + "1"} className='flex items-center flex-col mx-7 sm:mx-16 md:mx-32 lg:mx-64 xl:mx-96'>
@@ -95,6 +96,16 @@ export default function PhosarGrupper() {
                 </div>
             </button>
             <div className={`transition-all delay-150 duration-200 overflow-hidden w-full ${groupBool[index] ? "max-h-[150rem]" : "max-h-0"}`}> {/* KANSKE MÅSTE ÄNDRA VÄRDE PÅ max-h- beroende på hur många som kommer visas upp i animationen */}
+            
+            <h1 className="text-black whitespace-nowrap text-center text-lg bg-white my-5 py-1 drop-shadow rounded-lg">Electus</h1>
+            <div className="grid grid-cols-2 gap-4 mb-3 sm:mx-20 2xl:mx-64">
+                    {electusUsers.map((user, index) => (
+                        <button onClick={() => showUserProfile(user.profilePic, user.name, user.funFact)} key={index} className="bg-white p-2 rounded-lg drop-shadow hover:bg-slate-200">
+                            <img src={user.profilePic} alt={user.name} className="w-full aspect-square rounded-lg" />
+                            <h1 className="text-black text-xs pt-2 whitespace-nowrap">{user.name}</h1>
+                        </button>
+                    ))}
+            </div>    
                 <div className="grid grid-cols-3 gap-4 lg:grid-cols-4 2xl:grid-cols-5 mt-4">
                     {phosUsers.map((user, index) => (
                         <button onClick={() => showUserProfile(user.profilePic, user.name, user.funFact)} key={index} className="bg-white p-2 rounded-lg drop-shadow hover:bg-slate-200">
