@@ -29,14 +29,21 @@ export default function Header() {
                 </svg>
             </button>
             {/* dropdown menu, phone om ni ska lägga in nya länkar lägg in de i bägge menyerna dvs. dropdown och landscape*/}
-            <div className={`absolute top-full right-0 w-full bg-white shadow-md z-10 flex flex-col items-center gap-4 p-4 transition-opacity duration-300 portrait:flex ${isMenuOpen ? "opacity-100 portrait:block" : "opacity-0 hidden portrait:hidden"}`}>
-                <Link href="/profil" className="py-2 text-blue-500 hover:text-blue-700" onClick={closeMenu}>Profil</Link>
-                <Link href="/event" className="py-2 text-blue-500 hover:text-blue-700" onClick={closeMenu}>Galleri</Link>
-                <Link href="/n0llan" className="py-2 text-blue-500 hover:text-blue-700" onClick={closeMenu}>nØllan</Link>
-                <Link href="/phosare" className="py-2 text-blue-500 hover:text-blue-700" onClick={closeMenu}>Phösare</Link>
-                <Link href="/blandaren" className="py-2 text-blue-500 hover:text-blue-700" onClick={closeMenu}>Bländare</Link>
-                <Link href="/calandar" className="text-blue-500 hover:text-blue-700" onClick={closeMenu}>Calendar</Link>
-                <LogoutButton onClose={closeMenu} />
+            <div className={`absolute top-full right-0 w-full bg-white shadow-md z-10`}>
+                <div className={`transition-all delay-150 duration-200 overflow-hidden w-full ${isMenuOpen ? "max-h-[20rem]" : "max-h-0"}`}>
+                    <div className="flex justify-between items-center flex-col">
+                    <Link href="/profil" className="hover:text-blue-700 py-2" onClick={closeMenu}>Profil</Link>
+                    <Link href="/event" className="hover:text-blue-700 py-2" onClick={closeMenu}>Galleri</Link>
+                    <Link href="/n0llan" className="hover:text-blue-700 py-2" onClick={closeMenu}>nØllan</Link>
+                    <Link href="/phosare" className="hover:text-blue-700 py-2" onClick={closeMenu}>Phösare</Link>
+                    <Link href="/blandaren" className="hover:text-blue-700 py-2" onClick={closeMenu}>Bländare</Link>
+                    <Link href="/calandar" className="hover:text-blue-700 py-2" onClick={closeMenu}>Calendar</Link>
+                    <div className="py-1"></div>
+                    <LogoutButton onClose={closeMenu}/>
+                    <div className="py-2"></div>
+                    </div>
+                    
+                </div>
             </div>
             {/* landscape menu, computer*/}
             <div className="hidden landscape:flex items-center gap-4">
@@ -44,9 +51,9 @@ export default function Header() {
                 <Link href="/event" className="text-blue-500 hover:text-blue-700">Galleri</Link>
                 <Link href="/n0llan" className="text-blue-500 hover:text-blue-700">nØllan</Link>
                 <Link href="/phosare" className="text-blue-500 hover:text-blue-700">Phösare</Link>
-                <Link href="/blandaren" className="py-2 text-blue-500 hover:text-blue-700">Bländare</Link>
+                <Link href="/blandaren" className="text-blue-500 hover:text-blue-700">Bländare</Link>
                 <Link href="/calandar" className="text-blue-500 hover:text-blue-700">Calendar</Link>
-                <LogoutButton />
+                <LogoutButton/>
             </div>
         </header>
     );
