@@ -4,6 +4,7 @@ import useAuth from "../components/useAuth";
 import { doc, getDoc, setDoc, collection, getDocs, DocumentData } from 'firebase/firestore';
 import { db } from '../lib/firebaseConfig';
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import Image from 'next/image';
 
 export default function N0llanGrupper() {
 
@@ -23,8 +24,15 @@ export default function N0llanGrupper() {
     const [users, setUsers] = useState([]);
     useEffect(() => {
         const fetchUsers = async () => {
+            if (!user){ return <h1>Please login</h1>;}
+            const token = await user.getIdToken();
             try {
-                const response = await fetch('/api/getUsers');
+                const response = await fetch('/api/getUsers', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
                 if (response.ok) {
                     const data = await response.json();
                     console.log('Users:', data);
@@ -38,7 +46,7 @@ export default function N0llanGrupper() {
         };
 
         fetchUsers();
-    }, []);
+    }, [user]);
 /*OLD CODE
     useEffect(() => {
         if (user) {
@@ -103,7 +111,8 @@ OLD CODE END*/
         }
         const phosUsers = userData.filter(user => { if (user.phosGroup == group) return user });
 
-        return (<div key={group + "1"} className='flex items-center flex-col mx-7 sm:mx-16 md:mx-32 lg:mx-64 xl:mx-96'>
+        return (
+        <div key={group + "1"} className='flex items-center flex-col mx-7 sm:mx-16 md:mx-32 lg:mx-64 xl:mx-96'>
             <button onClick={() => toggleGroupBool(index)} className='bg-white text-black font-normal text-xl mt-4 rounded-lg w-full py-4 whitespace-nowrap drop-shadow hover:bg-slate-200'>{group}
                 <div className='text-right pr-3 pb-3 h-2'>
                     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
