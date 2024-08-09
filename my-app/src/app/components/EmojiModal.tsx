@@ -13,18 +13,18 @@ export default function EmojiModal(params:any) {
         "ℹ️": "Viktig information kommer att ges.",
         "✍️": "Ett bra tillfälle att plugga.",
         "🕺": "Gasque eller efterkör.",
-        "☔": "Kläder efter väder.",
+        "🌦️": "Kläder efter väder.",
     }
 
     return (
         <>
             <div className="fixed inset-0 flex flex-col justify-center items-center bg-black bg-opacity-20 z-50 backdrop-blur-sm animate-fadeInFast">
                 <div className="flex flex-col mx-3 bg-white rounded-lg p-3 space-y-1">
-                    <p className="text-lg text-center">Vad betyder alla emojis?</p>
+                    <p className="text-lg text-center sm:text-xl">Vad betyder alla emojis?</p>
                     {Object.entries(emojiDict).map(([key, value]) => (
-                        <div key={key} className="flex p-1">
-                            <p className="self-center mr-2">{key}</p>
-                            <p>{value}</p>
+                        <div key={key} className="flex items-center p-1">
+                            <p className="self-center mr-2 text-lg sm:text-2xl">{key}</p>
+                            <p className="sm:text-lg">{value}</p>
                         </div>
                     ))}
                     <div className="flex justify-center pt-2">
