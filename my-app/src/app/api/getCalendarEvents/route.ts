@@ -1,4 +1,4 @@
-import { google } from "googleapis"; // Using this import requires disabling 'net' in the webpack config (see next.config.js)
+const google = require('@googleapis/calendar') // Using this import requires disabling 'net' in the webpack config (see next.config.js)
 import { NextResponse } from "next/server";
 import { storage } from '../../lib/firebaseAdmin';
 
@@ -60,6 +60,7 @@ export async function GET() {
         for (let i = 0; i < eventFiles.length; i++) {
             //console.log("EVENT FILE: ", eventFiles[i].name);
             //console.log("IMAGE URL: ", imageUrls[i]);
+
             const fileNameWithExt = eventFiles[i].name.split('/').pop();
 
             if (fileNameWithExt) {
@@ -73,7 +74,7 @@ export async function GET() {
             const pictureUrl = location ? eventPicsMap[location] : null;
             return {
                 ...event,
-                pictureUrl: pictureUrl || '/Loke_i_Dubrovnik.png'
+                pictureUrl: pictureUrl || ""
             };
         });
         return NextResponse.json({ items });

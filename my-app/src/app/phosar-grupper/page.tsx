@@ -57,6 +57,7 @@ export default function N0llanGrupper() {
     async function getCollectionData() {
         const querySnapshot = await getDocs(collection(db, "users"));
         const usersDataArray = [];
+        console.log("querySnapshot", querySnapshot);
         for (const userDoc of querySnapshot.docs) {
             const userProfileRef = doc(db, "users", userDoc.id);
             const docSnap = await getDoc(userProfileRef);
