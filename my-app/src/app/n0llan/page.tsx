@@ -19,41 +19,47 @@ export default function N0llanGrupper() {
     const { user } = useAuth();
     const storage = getStorage();
 
+ 
+    /* CODE FOR FETCHTING n0llan */
+    const [users, setUsers] = useState([]);
     useEffect(() => {
-        if (user) {
-            getCollectionData();
-        }
+        const fetchUsers = async () => {
+            if (!user){ return <h1>Please login</h1>;}
+            const token = await user.getIdToken();
+            try {
+                const response = await fetch('/api/getUsers', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    //console.log('Users:', data);
+                    setUsers(data);
+                } else {
+                    console.error('Failed to fetch users');
+                }
+            } catch (error) {
+                console.error('Error fetching users:', error);
+            }
+        };
+        fetchUsers();
     }, [user]);
 
-    async function getCollectionData() {
-        const querySnapshot = await getDocs(collection(db, "users"));
-        const usersDataArray = [];
-        for (const userDoc of querySnapshot.docs) {
-            const userProfileRef = doc(db, "users", userDoc.id);
-            const docSnap = await getDoc(userProfileRef);
-            if (docSnap.exists()) {
-                var userData = docSnap.data();
-                if (userData.profilePic) {
-                    try {
-                        const picRef = ref(storage, userData.profilePic);
-                        const url = await getDownloadURL(picRef);
-                        userData.profilePic = url;
-                    } catch (error) {
-                        console.error("Error fetching profile picture:", error);
-                    }
-                }
-                usersDataArray.push(userData);
-            }
+    /* GROUPING n0llan */
+    useEffect(() => {
+        if (users.length > 0) {
+            const groups = users
+                .map(obj => obj.group)
+                .filter((group, index, self) => self.indexOf(group) === index);
+
+            setGroupsData(groups);
+            setUserData(users);
+            setGroupBool(Array(groups.length).fill(false));
         }
-        const groups = usersDataArray
-            .map(obj => obj.group)
-            .filter((group, index, self) => self.indexOf(group) === index)
+    }, [users]);
 
-        setGroupsData(groups);
-        setUserData(usersDataArray);
-        setGroupBool(Array(groups.length).fill(false));
-
-    }
 
     const toggleGroupBool = (index: number) => {
         setGroupBool(prevState => {
@@ -77,10 +83,10 @@ export default function N0llanGrupper() {
     function groupSeparation(group: string, index: number) {
 
         if (group == undefined) {
-            return "some people have not been assinged groups!!"
+            return 
         }
         const groupUsers = userData.filter(user => { if (user.group == group && !user.phosGroup) return user });
-        const phosUsers = userData.filter(user => { if (user.group == group && user.phosGroup != "KPH") return user });
+        const phosUsers = userData.filter(user => { if (user.group == group && user.phosGroup != "KPH" && user.phosGroup) return user });
         const kphUsers = userData.filter(user => { if (user.group == group && user.phosGroup == "KPH") return user });
 
         return (<div key={group + "1"} className='flex items-center flex-col mx-7 sm:mx-16 md:mx-32 lg:mx-64 xl:mx-96'>
@@ -99,31 +105,6 @@ export default function N0llanGrupper() {
                             <h1 className="text-black text-xs pt-2 whitespace-nowrap">{user.name}</h1>
                         </button>
                     ))}
-                    {/*TESTN0LLAN*/}
-                    <button className="bg-white p-2 rounded-lg drop-shadow hover:bg-slate-200">
-                        <img alt={`User ${index + 1}`} className="w-full aspect-square rounded-lg" />
-                        <h1 className="text-black text-xs pt-2 whitespace-nowrap">nØllan</h1>
-                    </button>
-                    <button className="bg-white p-2 rounded-lg drop-shadow hover:bg-slate-200">
-                        <img alt={`User ${index + 1}`} className="w-full aspect-square rounded-lg" />
-                        <h1 className="text-black text-xs pt-2 whitespace-nowrap">nØllan</h1>
-                    </button>
-                    <button className="bg-white p-2 rounded-lg drop-shadow hover:bg-slate-200">
-                        <img alt={`User ${index + 1}`} className="w-full aspect-square rounded-lg" />
-                        <h1 className="text-black text-xs pt-2 whitespace-nowrap">nØllan</h1>
-                    </button>
-                    <button className="bg-white p-2 rounded-lg drop-shadow hover:bg-slate-200">
-                        <img alt={`User ${index + 1}`} className="w-full aspect-square rounded-lg" />
-                        <h1 className="text-black text-xs pt-2 whitespace-nowrap">nØllan</h1>
-                    </button>
-                    <button className="bg-white p-2 rounded-lg drop-shadow hover:bg-slate-200">
-                        <img alt={`User ${index + 1}`} className="w-full aspect-square rounded-lg" />
-                        <h1 className="text-black text-xs pt-2 whitespace-nowrap">nØllan</h1>
-                    </button>
-                    <button className="bg-white p-2 rounded-lg drop-shadow hover:bg-slate-200">
-                        <img alt={`User ${index + 1}`} className="w-full aspect-square rounded-lg" />
-                        <h1 className="text-black text-xs pt-2 whitespace-nowrap">nØllan</h1>
-                    </button>
 
                 </div>
                 <h1 className="text-black whitespace-nowrap text-center text-lg bg-white my-5 py-1 drop-shadow rounded-lg">Bästisar</h1>

@@ -6,7 +6,7 @@ import { db } from '../lib/firebaseConfig';
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import Image from 'next/image';
 
-export default function N0llanGrupper() {
+export default function PhosarGrupper() {
 
     const [groupBool, setGroupBool] = useState<boolean[]>([]);
     const [groupsData, setGroupsData] = useState<string[]>([]);
@@ -20,8 +20,8 @@ export default function N0llanGrupper() {
     const { user } = useAuth();
     const storage = getStorage();
 
-    // NEW CODE
-    const [users, setUsers] = useState([]);
+    /* CODE FOR FETCHTING PHÖSARE */
+    const [users, setUsers] = useState<{ phosGroup: string }[]>([]);
     useEffect(() => {
         const fetchUsers = async () => {
             if (!user){ return <h1>Please login</h1>;}
@@ -35,7 +35,7 @@ export default function N0llanGrupper() {
                 });
                 if (response.ok) {
                     const data = await response.json();
-                    console.log('Users:', data);
+                    //console.log('Users:', data);
                     setUsers(data);
                 } else {
                     console.error('Failed to fetch users');
@@ -44,47 +44,21 @@ export default function N0llanGrupper() {
                 console.error('Error fetching users:', error);
             }
         };
-
         fetchUsers();
     }, [user]);
-/*OLD CODE
+
+    /* GROUPING PHÖSARE */
     useEffect(() => {
-        if (user) {
-            getCollectionData();
+        if (users.length > 0) {
+            const groups = users
+                .map(obj => obj.phosGroup)
+                .filter((phosGroup, index, self) => self.indexOf(phosGroup) === index);
+
+            setGroupsData(groups);
+            setUserData(users);
+            setGroupBool(Array(groups.length).fill(false));
         }
-    }, [user]);
-
-    async function getCollectionData() {
-        const querySnapshot = await getDocs(collection(db, "users"));
-        const usersDataArray = [];
-        console.log("querySnapshot", querySnapshot);
-        for (const userDoc of querySnapshot.docs) {
-            const userProfileRef = doc(db, "users", userDoc.id);
-            const docSnap = await getDoc(userProfileRef);
-            if (docSnap.exists()) {
-                var userData = docSnap.data();
-                if (userData.profilePic) {
-                    try {
-                        const picRef = ref(storage, userData.profilePic);
-                        const url = await getDownloadURL(picRef);
-                        userData.profilePic = url;
-                    } catch (error) {
-                        console.error("Error fetching profile picture:", error);
-                    }
-                }
-                usersDataArray.push(userData);
-            }
-        }
-        const groups = usersDataArray
-            .map(obj => obj.phosGroup)
-            .filter((phosGroup, index, self) => self.indexOf(phosGroup) === index)
-
-        setGroupsData(groups);
-        setUserData(usersDataArray);
-        setGroupBool(Array(groups.length).fill(false));
-
-    }
-OLD CODE END*/
+    }, [users]);
 
     const toggleGroupBool = (index: number) => {
         setGroupBool(prevState => {
@@ -108,7 +82,7 @@ OLD CODE END*/
     function groupSeparation(group: string, index: number) {
 
         if (group == undefined) {
-            return "some people have not been assinged groups!!"
+            return 
         }
         const phosUsers = userData.filter(user => { if (user.phosGroup == group) return user });
 
