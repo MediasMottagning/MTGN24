@@ -54,9 +54,13 @@ export async function GET() {
         // get the URLs with the signed URLs
         const eventImageUrls = await Promise.all(eventImagePromises);
         const imageUrls = eventImageUrls.map(url => url[0]);
+        //console.log("IMAGE URLS ARRAY: ", imageUrls);
 
         const eventPicsMap: { [key: string]: string } = {};
         for (let i = 0; i < eventFiles.length; i++) {
+            //console.log("EVENT FILE: ", eventFiles[i].name);
+            //console.log("IMAGE URL: ", imageUrls[i]);
+
             const fileNameWithExt = eventFiles[i].name.split('/').pop();
 
             if (fileNameWithExt) {
