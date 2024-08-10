@@ -19,41 +19,47 @@ export default function N0llanGrupper() {
     const { user } = useAuth();
     const storage = getStorage();
 
+ 
+    /* CODE FOR FETCHTING n0llan */
+    const [users, setUsers] = useState<{ group: string }[]>([]);
     useEffect(() => {
-        if (user) {
-            getCollectionData();
-        }
+        const fetchUsers = async () => {
+            if (!user){ return <h1>Please login</h1>;}
+            const token = await user.getIdToken();
+            try {
+                const response = await fetch('/api/getUsers', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    //console.log('Users:', data);
+                    setUsers(data);
+                } else {
+                    console.error('Failed to fetch users');
+                }
+            } catch (error) {
+                console.error('Error fetching users:', error);
+            }
+        };
+        fetchUsers();
     }, [user]);
 
-    async function getCollectionData() {
-        const querySnapshot = await getDocs(collection(db, "users"));
-        const usersDataArray = [];
-        for (const userDoc of querySnapshot.docs) {
-            const userProfileRef = doc(db, "users", userDoc.id);
-            const docSnap = await getDoc(userProfileRef);
-            if (docSnap.exists()) {
-                var userData = docSnap.data();
-                if (userData.profilePic) {
-                    try {
-                        const picRef = ref(storage, userData.profilePic);
-                        const url = await getDownloadURL(picRef);
-                        userData.profilePic = url;
-                    } catch (error) {
-                        console.error("Error fetching profile picture:", error);
-                    }
-                }
-                usersDataArray.push(userData);
-            }
+    /* GROUPING n0llan */
+    useEffect(() => {
+        if (users.length > 0) {
+            const groups = users
+                .map(obj => obj.group)
+                .filter((group, index, self) => self.indexOf(group) === index);
+
+            setGroupsData(groups);
+            setUserData(users);
+            setGroupBool(Array(groups.length).fill(false));
         }
-        const groups = usersDataArray
-            .map(obj => obj.phosGroup)
-            .filter((phosGroup, index, self) => self.indexOf(phosGroup) === index)
+    }, [users]);
 
-        setGroupsData(groups);
-        setUserData(usersDataArray);
-        setGroupBool(Array(groups.length).fill(false));
-
-    }
 
     const toggleGroupBool = (index: number) => {
         setGroupBool(prevState => {
@@ -77,9 +83,11 @@ export default function N0llanGrupper() {
     function groupSeparation(group: string, index: number) {
 
         if (group == undefined) {
-            return "some people have not been assinged groups!!"
+            return 
         }
-        const phosUsers = userData.filter(user => { if (user.phosGroup == group) return user });
+        const groupUsers = userData.filter(user => { if (user.group == group && !user.phosGroup) return user });
+        const phosUsers = userData.filter(user => { if (user.group == group && user.phosGroup != "KPH" && user.phosGroup) return user });
+        const kphUsers = userData.filter(user => { if (user.group == group && user.phosGroup == "KPH") return user });
 
         return (<div key={group + "1"} className='flex items-center flex-col mx-7 sm:mx-16 md:mx-32 lg:mx-64 xl:mx-96'>
             <button onClick={() => toggleGroupBool(index)} className='bg-white text-black font-normal text-xl mt-4 rounded-lg w-full py-4 whitespace-nowrap drop-shadow hover:bg-slate-200'>{group}
@@ -88,11 +96,30 @@ export default function N0llanGrupper() {
                     {groupBool[index] ? <i className="material-symbols-outlined">keyboard_arrow_up</i> : <i className="material-symbols-outlined">keyboard_arrow_down</i>}
                 </div>
             </button>
-            <div className={`transition-all delay-150 duration-200 overflow-hidden w-full ${groupBool[index] ? "max-h-[150rem]" : "max-h-0"}`}> {/* KANSKE MÅSTE ÄNDRA VÄRDE PÅ max-h- beroende på hur många som kommer visas upp i animationen */}
-                <div className="grid grid-cols-3 gap-4 lg:grid-cols-4 2xl:grid-cols-5 mt-4">
-                    {phosUsers.map((user, index) => (
+            <div className={`transition-all delay-150 duration-200 overflow-hidden w-full ${groupBool[index] ? "max-h-[200rem]" : "max-h-0"}`}> {/* KANSKE MÅSTE ÄNDRA VÄRDE PÅ max-h- beroende på hur många som kommer visas upp i animationen */}
+                <h1 className="text-black whitespace-nowrap text-center text-lg bg-white my-5 py-1 drop-shadow rounded-lg">NØllan</h1>
+                <div className="grid grid-cols-3 gap-4 lg:grid-cols-4 2xl:grid-cols-5">
+                    {groupUsers.map((user, index) => (
+                        <button onClick={() => showUserProfile(user.profilePic, user.name, user.funFact)} key={index} className="bg-white p-2 rounded-lg drop-shadow hover:bg-slate-200">
+                            <img src={user.profilePic} alt={`User ${index + 1}`} className="w-full aspect-square rounded-lg" />
+                            <h1 className="text-black text-xs pt-2 whitespace-nowrap">{user.name}</h1>
+                        </button>
+                    ))}
+
+                </div>
+                <h1 className="text-black whitespace-nowrap text-center text-lg bg-white my-5 py-1 drop-shadow rounded-lg">Bästisar</h1>
+                <div className="grid grid-cols-2 gap-4 mb-3 sm:mx-20 2xl:mx-64">
+                    {kphUsers.map((user, index) => (
                         <button onClick={() => showUserProfile(user.profilePic, user.name, user.funFact)} key={index} className="bg-white p-2 rounded-lg drop-shadow hover:bg-slate-200">
                             <img src={user.profilePic} alt={user.name} className="w-full aspect-square rounded-lg" />
+                            <h1 className="text-black text-xs pt-2 whitespace-nowrap">{user.name}</h1>
+                        </button>
+                    ))}
+                </div>
+                <div className="grid grid-cols-3 gap-4 2xl:mx-48">
+                    {phosUsers.map((user, index) => (
+                        <button onClick={() => showUserProfile(user.profilePic, user.name, user.funFact)} key={index} className="bg-white p-2 rounded-lg drop-shadow hover:bg-slate-200">
+                            <img src={user.profilePic} alt={`User ${index + 1}`} className="w-full aspect-square rounded-lg" />
                             <h1 className="text-black text-xs pt-2 whitespace-nowrap">{user.name}</h1>
                         </button>
                     ))}
@@ -116,6 +143,7 @@ export default function N0llanGrupper() {
                     </div>
                 </div>
             </div>
+
         </main>
     )
 }

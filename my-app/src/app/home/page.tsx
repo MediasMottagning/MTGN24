@@ -12,6 +12,7 @@ import { Post } from "../lib/definitions";
 import EventCard from "../components/EventCard";
 import AnslagCard from "../components/AnslagCard";
 import { NextRequest, NextResponse } from "next/server";
+import EmojiModal from "../components/EmojiModal";
 
 const gasqueImage = "/gasqueImg.png";
 const homeGradient = "/homeGradient.jpg"
@@ -19,22 +20,40 @@ const homeGradient = "/homeGradient.jpg"
 
 /**
  * 
- * @param event An event object from the Google Calendar API
- * @returns {string} A string describing the price of the event such as "100 kr" or "Gratis"
+ * @param prefix The prefix to search for in the text.
+ * @param eventDescription The text to search in.
+ * @returns {string} A string containing whatever comes after the gives prefix.
  */
-function parseEventPrice(event: any): string {
-    if (event.description) {
-        const priceRegex = /(?<=Pris: )\d+/;
-        const match = event.description.match(priceRegex);
-        if (match) {
-            return `${match[0]} kr`;
-        } else {
-            return "Gratis";
-        }
-    } else { // no description set for the event
-        return "Gratis";
+function parseEventDescription(prefix:string, eventDescription:string): string {
+    // Shoutout to ChatGPT for this
+
+    if (!eventDescription) {
+        return "";
     }
+    const textToParse = eventDescription;
+
+    // Define the search string
+    const searchString = prefix;
+    
+    // Find the index of the search string
+    const startIndex = textToParse.indexOf(searchString);
+    
+    // If the search string is not found, return an empty string
+    if (startIndex === -1) {
+        return "";
+    }
+    
+    // Calculate the start index of the desired substring
+    const substringStart = startIndex + searchString.length;
+    
+    // Find the index of the newline character after the search string
+    const endIndex = textToParse.indexOf('\n', substringStart);
+    
+    // Extract and return the substring from the search string to the newline or the end of the string
+    return endIndex === -1 ? textToParse.substring(substringStart).trim() : textToParse.substring(substringStart, endIndex).trim();
+    
 }
+
 
 /**
  * 
@@ -122,8 +141,16 @@ export default function Home(request: NextRequest, response: NextResponse) {
 
     }, [events]);
 
+    const [showModal, setShowModal] = useState(false);
+    
+    function toggleModal() { // Is passed to EventCard as a prop
+        console.log("Toggling modal");
+        setShowModal(!showModal);   
+        console.log(showModal);
+    }
+
     return (
-        <main className="flex min-h-screen flex-col items-center bg-gradient-to-r from-[#A5CACE] to-[#4FC0A0]">
+        <main className="flex min-h-screen min-w-72 flex-col items-center bg-gradient-to-r from-[#A5CACE] to-[#4FC0A0]">
             <script src="https://apis.google.com/js/api.js" type="text/javascript"></script>
             <div className="flex w-11/12 flex-col mt-5 md:mt-9 max-w-2xl"> {/* EVENT MODULE */}
                 <div className="flex flex-row">
@@ -137,7 +164,10 @@ export default function Home(request: NextRequest, response: NextResponse) {
                                 title={event.summary}
                                 time={formatDateTime(event.start.dateTime)}
                                 location={event.location}
-                                costs={parseEventPrice(event)}
+                                costs={parseEventDescription("Kostar:", event.description)}
+                                description={parseEventDescription("Beskrivning:", event.description)}
+                                image={event.pictureUrl}
+                                onModalClick={toggleModal}
                                 />
                         );
                     })}
@@ -160,6 +190,7 @@ export default function Home(request: NextRequest, response: NextResponse) {
                     })}
                 </div>
             </div>
+            {showModal && <EmojiModal onCloseClick={toggleModal} />}
         </main>
     );
 }

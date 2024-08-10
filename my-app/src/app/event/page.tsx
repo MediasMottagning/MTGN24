@@ -56,15 +56,16 @@ export default function Event() {
     }
 
     return (
-        <main className="flex min-h-screen flex-col items-center justify-between p-24">
-            <h1 className="text-4xl font-bold text-center">EVENTS</h1>
-            <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
+        <main className="min-h-screen bg-gradient-to-r from-[#A5CACE] to-[#4FC0A0]">
+            <div className='flex flex-col items-center mx-7 sm:mx-16 md:mx-32 lg:mx-64 xl:mx-96'>
                 {events.map(event => (
-                    <div key={event.event}>
+                    <div className='w-full mb-8' key={event.event}>
                         <Link href={`/event/${event.event}`}>
-                            <h2 style={{ cursor: 'pointer' }}>{event.event}</h2>
+                            <h2 className='bg-white text-black font-normal text-center text-xl mt-4 rounded-lg py-4 whitespace-nowrap drop-shadow hover:bg-slate-200 w-full' style={{ cursor: 'pointer' }}>
+                                {event.event}
+                            </h2>
                         </Link>
-                        <div>
+                        <div className="grid grid-cols-3 gap-4 lg:grid-cols-4 2xl:grid-cols-5">
                             {event.imageUrls.slice(1).map((url, index) => (
                                 <img 
                                     key={index} 
@@ -72,6 +73,7 @@ export default function Event() {
                                     alt={`Event ${event.event} Image ${index + 1}`} 
                                     onClick={() => openModal(url)}
                                     style={{ cursor: 'pointer' }} 
+                                    className='object-cover h-20 w-full rounded-lg shadow-lg mt-2'
                                 />
                             ))}
                         </div>

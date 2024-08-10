@@ -37,7 +37,8 @@ const config: Config = {
       },
       animation: {
         fadeIn: 'fadeIn 0.4s ease-in-out',
-        fadeInFromBottom: 'fadeInFromBottom 0.5s ease-out forwards', // Customize duration and easing
+        fadeInFast: 'fadeIn 0.15s ease-in-out',
+        fadeInFromBottom: 'fadeInFromBottom 0.5s ease-out forwards',
         pulseInfinite: 'pulse 4s cubic-bezier(0, 0, 1, 1) infinite',
       },
 
