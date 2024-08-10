@@ -48,26 +48,35 @@ const Home: React.FC = () => {
   };
 
   return (
-    <main>
-      <form onSubmit={handleSignIn}>
-        <input
-          className="border border-gray-300 rounded-lg p-2 text-black"
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="Username"
-          required
-        />
-        <input
-          className="border border-gray-300 rounded-lg p-2 text-black"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          required
-        />
-        <button type="submit" disabled={isDisabled}>Login</button>
-      </form>
+    <main className="min-h-screen flex flex-col bg-gradient-to-t to-[#A5CACE] from-[#4FC0A0]">
+        <div className="flex min-h-48 justify-center items-center"> {/* Top half */}
+          <p className='text-lg font-semibold text-white drop-shadow-md'>Välkommen till Mottagningen!</p>
+        </div>
+
+        <div className='flex flex-col items-center rounded-t-2xl grow pt-4 space-y-4 bg-white animate-fadeInFromBottom'> {/* Bottom half */}
+          <p className='text-2xl font-semibold bg-gradient-to-t to-[#A5CACE] from-[#4FC0A0] bg-clip-text text-transparent'>Logga in</p>
+        <form onSubmit={handleSignIn} className='flex flex-col space-y-2'>
+          <input
+            className="border border-gray-300 rounded-lg p-2 m-1"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Användarnamn"
+            required
+          />
+          <input
+            className="border border-gray-300 rounded-lg p-2 m-1"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Lösenord"
+            required
+          />
+          <div className="flex justify-center pt-4">
+            <button type="submit" disabled={isDisabled} className="drop-shadow-homeShadow w-2/3 text-white rounded-full py-2 bg-gradient-to-r from-[#A5CACE] to-[#4FC0A0]">Logga in</button>
+          </div>
+        </form>
+      </div>
     </main>
   );
 };
