@@ -8,16 +8,24 @@ const Bandaren = () => {
   const [blandare, setBlandare] = useState([]);
 
   useEffect(() => {
-    const fetchBlandare = async () => {
-      if (!user) {
-        return <h1>Please login</h1>;
-      }
-      const token = await user.getIdToken();
-      try {
-        const response = await fetch('/api/getBlandare', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`
+      const fetchBlandare = async () => {
+          if (!user){ return <h1>Please login</h1>;} // If middleware.ts is working this should never be rendered
+          const token = await user.getIdToken();
+          try {
+              const response = await fetch('/api/getBlandare', {
+                  method: 'GET',
+                  headers: {
+                      'Authorization': `Bearer ${token}`
+                  }
+              });
+              if (response.ok) {
+                  const data = await response.json();
+                  setBlandare(data[0].links);
+              } else {
+                  console.error('Failed to fetch blandare');
+              }
+          } catch (error) {
+              console.error('Error fetching blandare:', error);
           }
         });
         if (response.ok) {

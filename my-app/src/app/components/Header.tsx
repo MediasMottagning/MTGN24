@@ -3,14 +3,14 @@ import React, { useState } from "react";
 import LogoutButton from "./LogoutBtn";
 import Link from "next/link";
 import Image from "next/image";
+import useAuth from "./useAuth";
+
 
 export default function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+    
+    const { user } = useAuth();
 
-  // toggle dropdown menu visibility
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // close dropdown menu when a link is clicked
   const closeMenu = () => {

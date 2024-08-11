@@ -227,7 +227,7 @@ const UpdateUser = () => {
   }
 
   if (!user) {
-    return <h1>Please login</h1>;
+    return <h1>Please login</h1>; // If middleware.ts is working this should never be rendered
   } else if (!isAdmin) {
     return <h1>Only admins can access this page</h1>;
   }
