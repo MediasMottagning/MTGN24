@@ -60,7 +60,9 @@ function parseEventDescription(prefix:string, eventDescription:string): string {
  * @param dateTime A string such as "2024-08-18T10:15:00+02:00"
  * @returns {string} A string such as "10:15 Söndag"
  */
-function formatDateTime(dateTime: string): string {
+function formatDateTime(startTime: string, endTime: string): string {
+
+    const dateObjects = [new Date(startTime), new Date(endTime)];
 
     const weekdayMap: { [key: number]: string } = {
         1: "Måndag",
@@ -72,13 +74,21 @@ function formatDateTime(dateTime: string): string {
         0: "Söndag",  
     };
 
-    const dateObj = new Date(dateTime);
+    let finalString = "";
 
-    const hours = dateObj.getHours().toString().padStart(2, '0');
-    const minutes = dateObj.getMinutes().toString().padStart(2, '0');
-    const weekday = weekdayMap[dateObj.getDay()];
+    // This is a little ugly I know, but using a loop won't make is easier
+    let hours = dateObjects[0].getHours().toString().padStart(2, '0');
+    let minutes = dateObjects[0].getMinutes().toString().padStart(2, '0');
+    const weekday = weekdayMap[dateObjects[0].getDay()];
 
-    return `${hours}:${minutes} ${weekday}`;
+    finalString += `${hours}:${minutes}-`
+
+    hours = dateObjects[1].getHours().toString().padStart(2, '0');
+    minutes = dateObjects[1].getMinutes().toString().padStart(2, '0');
+
+    finalString += `${hours}:${minutes} ${weekday}`;
+
+    return finalString;
 }
 
 
@@ -150,11 +160,11 @@ export default function Home(request: NextRequest, response: NextResponse) {
     }
 
     return (
-        <main className="flex min-h-screen min-w-72 flex-col items-center bg-gradient-to-r from-[#A5CACE] to-[#4FC0A0]">
+        <main className="flex min-h-screen min-w-80 flex-col items-center bg-gradient-to-r from-[#A5CACE] to-[#4FC0A0]">
             <script src="https://apis.google.com/js/api.js" type="text/javascript"></script>
             <div className="flex w-11/12 flex-col mt-5 md:mt-9 max-w-2xl"> {/* EVENT MODULE */}
                 <div className="flex flex-row">
-                    <p className="font-semibold text-lg text-white drop-shadow-lg sm:text-2xl ml-1">Nästa event</p>
+                    <p className="font-semibold text-lg text-white drop-shadow-xl sm:text-2xl ml-1">Nästa event</p>
                     <p className="text-2xl drop-shadow-md sm:text-3xl ml-1">🥳</p>
                 </div>
                 <div className="flex flex-col space-y-5">
@@ -162,7 +172,7 @@ export default function Home(request: NextRequest, response: NextResponse) {
                         return (
                             <EventCard key={event.id}
                                 title={event.summary}
-                                time={formatDateTime(event.start.dateTime)}
+                                time={formatDateTime(event.start.dateTime, event.end.dateTime)}
                                 location={event.location}
                                 costs={parseEventDescription("Kostar:", event.description)}
                                 description={parseEventDescription("Beskrivning:", event.description)}
@@ -175,7 +185,7 @@ export default function Home(request: NextRequest, response: NextResponse) {
             </div>
             <div className="flex w-11/12 flex-col mt-5 md:mt-9 max-w-2xl mb-5"> {/* EVENT MODULE */}
             <div className="flex flex-row">
-                    <p className="font-semibold text-lg text-white drop-shadow-lg sm:text-2xl pl-1">Senaste anslag</p>
+                    <p className="font-semibold text-lg text-white drop-shadow-xl sm:text-2xl pl-1">Senaste anslag</p>
                     <p className="text-2xl drop-shadow-md sm:text-3xl ml-1">📣</p>
                 </div>
                 
