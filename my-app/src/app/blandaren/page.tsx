@@ -27,18 +27,7 @@ const Bandaren = () => {
           } catch (error) {
               console.error('Error fetching blandare:', error);
           }
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setBlandare(data[0].links);
-        } else {
-          console.error('Failed to fetch blandare');
-        }
-      } catch (error) {
-        console.error('Error fetching blandare:', error);
-      }
-    };
-
+        };
     fetchBlandare();
   }, [user]);
 
