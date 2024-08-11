@@ -104,7 +104,7 @@ const Home = () => {
     }, [user]);
     // if user is not logged in, show a message to login
     if (!user) {
-        return <h1>Please login to update your profile.</h1>;
+        return <h1>Please login.</h1>;  // If middleware.ts is working this should never be rendered
     }
     // update the fun fact in the users profile on firestore from the form input
     const updateFunFact = async (event: FormEvent<HTMLFormElement>) => {

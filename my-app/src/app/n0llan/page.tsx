@@ -24,7 +24,7 @@ export default function N0llanGrupper() {
     const [users, setUsers] = useState<{ group: string }[]>([]);
     useEffect(() => {
         const fetchUsers = async () => {
-            if (!user){ return <h1>Please login</h1>;}
+            if (!user){ return <h1>Please login</h1>;} // If middleware.ts is working this should never be rendered
             const token = await user.getIdToken();
             try {
                 const response = await fetch('/api/getUsers', {
@@ -130,7 +130,7 @@ export default function N0llanGrupper() {
         )
     }
 
-    if (!user) { return <h1>Please login :|</h1>; }
+    if (!user) { return <h1>Please login :|</h1>; } // If middleware.ts is working this should never be rendered
     return (
         <main className="min-h-screen bg-gradient-to-r from-[#A5CACE] to-[#4FC0A0]">
             <div>{groupsData.map((group, index) => groupSeparation(group, index))}</div>

@@ -104,7 +104,7 @@ export default function Home(request: NextRequest, response: NextResponse) {
         
         const fetchPostsData = async () => {
             // if user is not logged in, redirect to login page
-            if (!user){ return <h1>Please login</h1>;}
+            if (!user){ return <h1>Please login</h1>;} // If middleware.ts is working this should never be rendered
             const token = await user.getIdToken();
             const response = await fetch('/api/getPosts', {
                 method: 'GET',
