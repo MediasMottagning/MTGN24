@@ -23,7 +23,7 @@ const LogoutButton: React.FC<LogoutButtonProps> = ({ onClose }) => {
   };
 
   return (
-    <button onClick={handleLogout}>Logout</button>
+    <button className="text-gray-700 hover:text-blue-400 font-medium transition ease-in-out" onClick={handleLogout}>Logout</button>
   );
 };
 

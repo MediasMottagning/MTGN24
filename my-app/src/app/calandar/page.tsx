@@ -1,4 +1,10 @@
+"use client"
+import useAuth from "../components/useAuth";
+
 export default function Calandar() {
+  const { user } = useAuth();
+  if (!user) return <h1>Please login</h1>;
+  
   return (
     <div>
       <iframe

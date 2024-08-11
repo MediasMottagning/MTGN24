@@ -10,7 +10,7 @@ interface EventData {
     event: string;
     imageUrls: string[];
 }
-
+/* GALLERY VIEW FOR DISPLAYING PICTURES FROM EACH EVENT */
 export default function Event() {
     const { user } = useAuth();
     const [events, setEvents] = useState<EventData[]>([]);
@@ -61,12 +61,12 @@ export default function Event() {
                 {events.map(event => (
                     <div className='w-full mb-8' key={event.event}>
                         <Link href={`/event/${event.event}`}>
-                            <h2 className='bg-white text-black font-normal text-center text-xl mt-4 rounded-lg py-4 whitespace-nowrap drop-shadow hover:bg-slate-200 w-full' style={{ cursor: 'pointer' }}>
+                            <h2 className='bg-white text-black font-medium text-center text-xl mt-4 rounded-lg py-4 whitespace-nowrap drop-shadow hover:bg-slate-200 w-full transition ease-in-out' style={{ cursor: 'pointer' }}>
                                 {event.event}
                             </h2>
                         </Link>
                         <div className="grid grid-cols-3 gap-4 lg:grid-cols-4 2xl:grid-cols-5">
-                            {event.imageUrls.slice(1).map((url, index) => (
+                            {event.imageUrls.slice(1, 4).map((url, index) => ( // only display the first 3 images
                                 <img 
                                     key={index} 
                                     src={url} 

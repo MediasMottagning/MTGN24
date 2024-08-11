@@ -55,7 +55,7 @@ export default function EventCard(params:any) {
                     <p className="text-xl sm:text-2xl">{params.description || ""}</p>
 
                     <div className="flex flex-row-reverse grow">
-                        <button className="border rounded-full text-sm size-7" onClick={handleQuestionMark}>?</button>
+                        <button className="border rounded-full text-sm size-7  hover:bg-gray-400 transition ease-in-out" onClick={handleQuestionMark}>?</button>
                     </div>
                 </div>
             </div>

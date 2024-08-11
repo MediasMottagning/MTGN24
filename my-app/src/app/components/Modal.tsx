@@ -30,11 +30,12 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, imageUrl }) => {
                 .modal {
                     position: relative;
                     background: white;
-                    padding: 20px;
+                    padding: 10px;
                     border-radius: 8px;
-                    max-width: 80%;
-                    max-height: 80%;
-                    overflow: auto;
+                    max-width: 90%;
+                    max-height: 90%;
+                    overflow: hidden;
+                    box-sizing: border-box;
                 }
                 .close {
                     position: absolute;
@@ -42,10 +43,26 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, imageUrl }) => {
                     right: 10px;
                     font-size: 24px;
                     cursor: pointer;
+                    background-color: rgba(255, 255, 255, 0.8);
+                    padding: 5px;
+                    width: 30px;
+                    height: 30px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 20%;
+                    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+                }
+                .close:hover {
+                    background-color: rgb(226 232 240);
+                
                 }
                 .modal-content {
+                    display: block;
                     max-width: 100%;
-                    max-height: 100%;
+                    max-height: calc(100vh - 60px);
+                    margin: 0 auto;
+                    border-radius: 8px;
                 }
             `}</style>
         </div>

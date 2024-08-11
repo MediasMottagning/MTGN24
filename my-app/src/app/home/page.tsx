@@ -140,14 +140,14 @@ export default function Home(request: NextRequest, response: NextResponse) {
     }, [user]);
 
     useEffect(() => {
-        console.log("Posts");
-        console.log(posts);
+        //console.log("Posts");
+        //console.log(posts);
 
     }, [posts]);
 
     useEffect(() => {
-        console.log("Events");
-        console.log(events);
+        //console.log("Events");
+        //console.log(events);
 
     }, [events]);
 
