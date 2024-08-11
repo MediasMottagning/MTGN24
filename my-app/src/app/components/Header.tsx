@@ -6,10 +6,13 @@ import Image from "next/image";
 import useAuth from "./useAuth";
 
 
-export default function Header() {
-    
-    const { user } = useAuth();
+export default function Header() {    
+  const { user } = useAuth();
 
+  // toggle dropdown menu visibility
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // close dropdown menu when a link is clicked
