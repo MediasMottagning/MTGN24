@@ -4,6 +4,10 @@ import Image from "next/image";
 
 
 function getTimeSincePost(createdAt:Date) {
+
+    if (!createdAt) {
+        return "";
+    }
     
     const postTime = new Date(createdAt); // Idk why but createdAt needs to be re-cast as a Date object for this to work
     const currentTime = new Date();
@@ -35,7 +39,7 @@ export default function AnslagCard(params:any) {
         <div className="flex w-full flex-col bg-white drop-shadow-homeShadow rounded-lg p-1 animate-fadeIn">
             <div className="flex w-full place-content-between">
                 <p className="w-4/5 p-0.5 sm:p-2 -mt-1 font-semibold break-words sm:text-lg">{params.title || "Blog post title"}</p>
-                <p className="text-xs text-right p-0.5 sm:p-2 min-w-fit text-gray-700 sm:text-sm">{getTimeSincePost(params.createdAt)}</p>
+                <p className="text-xs text-right p-0.5 sm:p-2 min-w-fit text-gray-700 sm:text-sm">{getTimeSincePost(params.createdAt) || "69 f.Kr"}</p>
             </div>
             <div className="flex w-full">
             </div>
