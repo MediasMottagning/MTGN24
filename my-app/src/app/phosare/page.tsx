@@ -97,7 +97,7 @@ export default function PhosarGrupper() {
             </button>
             <div className={`transition-all delay-150 duration-200 overflow-hidden w-full ${groupBool[index] ? "max-h-[150rem]" : "max-h-0"}`}> {/* KANSKE MÅSTE ÄNDRA VÄRDE PÅ max-h- beroende på hur många som kommer visas upp i animationen */}
             
-            <h1 className="text-black whitespace-nowrap text-center text-lg bg-white my-5 py-1 drop-shadow rounded-lg">Electus</h1>
+            <h1 className="text-black whitespace-nowrap text-center text-lg bg-white my-2 py-1 drop-shadow rounded-lg opacity-0"></h1>
             <div className="grid grid-cols-2 gap-4 mb-3 sm:mx-20 2xl:mx-64">
                     {electusUsers.map((user, index) => (
                         <button onClick={() => showUserProfile(user.profilePic, user.name, user.funFact)} key={index} className="bg-white p-2 rounded-lg drop-shadow hover:bg-slate-200">
