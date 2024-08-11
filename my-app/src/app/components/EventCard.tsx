@@ -20,7 +20,7 @@ export default function EventCard(params:any) {
     }
 
     return (
-        <div className="flex w-full flex-row h-36 sm:h-48 bg-white drop-shadow-homeShadow rounded-lg animate-fadeIn">
+        <div className="flex min-w-[300px] w-full flex-row h-36 sm:h-48 bg-white drop-shadow-homeShadow rounded-lg animate-fadeIn">
             <div className="flex w-1/3 sm:w-2/5 relative mr-1">
                 <Image alt="Preview image of event" src={params.image || backupImage} fill={true} objectFit="cover" className="rounded-l-md"></Image>
             </div>
