@@ -11,7 +11,7 @@ const bandaren = () => {
 
   useEffect(() => {
       const fetchBlandare = async () => {
-          if (!user){ return <h1>Please login</h1>;}
+          if (!user){ return <h1>Please login</h1>;} // If middleware.ts is working this should never be rendered
           const token = await user.getIdToken();
           try {
               const response = await fetch('/api/getBlandare', {
