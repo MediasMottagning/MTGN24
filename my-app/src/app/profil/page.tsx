@@ -2,31 +2,27 @@
 
 import { FormEvent, useEffect, useState } from 'react';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { getStorage, ref, getDownloadURL } from "firebase/storage"; // for profile pic
+import { getStorage, ref, getDownloadURL } from "firebase/storage"; 
 import { getAuth, onAuthStateChanged, updatePassword } from "firebase/auth";
-import { db, auth } from '../lib/firebaseConfig';
+import { db } from '../lib/firebaseConfig';
 import LogoutButton from "../components/LogoutBtn";
 import useAuth from "../components/useAuth";
-import { Montserrat_Alternates } from 'next/font/google';
 import Link from 'next/link';
 
 const Home = () => {
-    const [funFact, setFunFact] = useState<string>(''); // displayed fun fact
-    const [inputFact, setInputFact] = useState<string>(''); //form fun fact
-    const [inputPassword, setInputPassword] = useState<string>(''); //form password
-    const [inputPassword1, setInputPassword1] = useState<string>(''); //form1 password, used to confirm password
-    const [profilePic, setProfilePic] = useState<string>(''); // profile pic url
+    const [funFact, setFunFact] = useState<string>(''); 
+    const [inputFact, setInputFact] = useState<string>(''); 
+    const [inputPassword, setInputPassword] = useState<string>(''); 
+    const [inputPassword1, setInputPassword1] = useState<string>(''); 
+    const [profilePic, setProfilePic] = useState<string>(''); 
     const { user } = useAuth();
-    // admin check vars
     const [isAdmin, setIsAdmin] = useState(false);
     const [loading, setLoading] = useState(true);
     
-    // check if user is admin
     useEffect(() => {
         const checkAdminStatus = async () => {
           const auth = getAuth();
           onAuthStateChanged(auth, async (user) => {
-            // get user auth token and send to API endpoint /api/isAdmin
             if (user) {
               try {
                 const idToken = await user.getIdToken();
@@ -39,7 +35,6 @@ const Home = () => {
                 });
     
                 if (!response.ok) {
-                  // Error response from the server, only for debugging
                   console.error('Response error:', response.status, response.statusText);
                   const errorText = await response.text(); 
                   console.error('Response text:', errorText);
@@ -55,15 +50,14 @@ const Home = () => {
                 setLoading(false);
               }
             } else {
-              setLoading(false); // set loading to false if user is not admin
+              setLoading(false); 
             }
           });
         };
     
         checkAdminStatus();
-      }, []); // run only once
-    // fetch the fun fact from the users profile on firestore
-    /* OM NÅGON HAR TID ÄNDRA DENNA FUNKTION SÅ ATT DET BLIR EN FETCH METOD SOM KALLAR PÅ EN API ENDPOINT ISTÄLLET*/
+      }, []); 
+
     useEffect(() => {
         if (user) {
             const fetchUserData = async () => {
@@ -72,19 +66,13 @@ const Home = () => {
                     const docSnap = await getDoc(userProfileRef);
                     if (docSnap.exists()) {
                         const userData = docSnap.data();
-                        // fun fact
                         setFunFact(userData.funFact || '');
-                        // setInputFact(userData.funFact || '');
                         const picUrl = userData.profilePic;
-                        //console.log("Profile picture URL: ", picUrl);
-                        /* Get profile picture */
                         if (picUrl) {
                             const storage = getStorage();
                             const picRef = ref(storage, picUrl);
-                            //console.log("Profile picture ref: ", picRef);
                             getDownloadURL(picRef)
                                 .then((url) => {
-                                    //console.log("Profile picture URL: ", url);
                                     setProfilePic(url);
                                 })
                                 .catch((error) => {
@@ -102,19 +90,18 @@ const Home = () => {
             fetchUserData();
         }
     }, [user]);
-    // if user is not logged in, show a message to login
+
     if (!user) {
-        return <h1>Please login.</h1>;  // If middleware.ts is working this should never be rendered
+        return <h1 className="text-center text-2xl text-red-500">Please login.</h1>;  
     }
-    // update the fun fact in the users profile on firestore from the form input
+
     const updateFunFact = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (user) {
             const userProfileRef = doc(db, "users", user.uid);
             try {
                 await setDoc(userProfileRef, { funFact: inputFact }, { merge: true });
-                setFunFact(inputFact); // update displayed fact 
-                console.log("User fun fact updated!");
+                setFunFact(inputFact); 
                 alert("Fun fact updated successfully!");
             } catch (error) {
                 console.error("Error updating fun fact: ", error);
@@ -122,68 +109,86 @@ const Home = () => {
             }
         }
     };
-     // update password in the users profile on firbase auth from the form input
-     const newPassword = async (event: FormEvent<HTMLFormElement>) => {
+
+    const newPassword = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (user) {
-            // check if the two passwords match
             if (inputPassword !== inputPassword1) {
                 alert("Passwords do not match!");
-            }else{
-            updatePassword(user, inputPassword).then(() => {
-            // successful change of password
-                console.log("User password updated!");
-                alert("Password updated successfully!");
-              }).catch((error) => {
-            // error handling
-                console.error("Error updating password: ", error);
-                alert("Failed to update password. \nMake sure your password is at least 6 characters long.");
-              });
+            } else {
+                updatePassword(user, inputPassword).then(() => {
+                    alert("Password updated successfully!");
+                }).catch((error) => {
+                    console.error("Error updating password: ", error);
+                    alert("Failed to update password. \nMake sure your password is at least 6 characters long.");
+                });
             }
         }
     };
 
     return (
-        <main className="flex min-h-screen flex-col items-center justify-between p-24">
-            <div>
-                {profilePic && <img src={profilePic} alt="Profile" />}
-
-                <h2>{user?.email}</h2>
-                <h2>{user?.displayName}</h2>
-                <h2>{funFact}</h2>
+        <main className="flex min-h-screen flex-col items-center bg-gradient-to-r from-[#A5CACE] to-[#4FC0A0] p-10">
+            <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6 space-y-6">
+                {profilePic && (
+                    <div className="flex justify-center mb-4">
+                        <img src={profilePic} alt="Profile" className="w-36 h-36 rounded-full shadow-lg" />
+                    </div>
+                )}
+                <h2 className="text-lg font-bold text-center text-gray-800">{user?.displayName}</h2>
+                <p className="text-center text-gray-600">{"Fun fact: "+funFact || "No fun fact available"}</p>
             </div>
-            <form onSubmit={updateFunFact}>
-                <input
-                    className="border border-gray-300 rounded-lg p-2 text-black"
-                    type="text"
-                    value={inputFact}
-                    onChange={(e) => setInputFact(e.target.value)}
-                    placeholder="Fun Fact"
-                    required
-                />
-                <button type="submit">Submit Fun Fact</button>
-            </form>
 
-            <form onSubmit={newPassword}>
-                <input
-                    className="border border-gray-300 rounded-lg p-2 text-black"
-                    type="password"
-                    onChange={(e) => setInputPassword(e.target.value)}
-                    placeholder="New Password"
-                    required
-                />
-                <input
-                    className="border border-gray-300 rounded-lg p-2 text-black"
-                    type="password"
-                    onChange={(e) => setInputPassword1(e.target.value)}
-                    placeholder="Confirm New Password"
-                    required
-                />
-                <button type="submit">Change password</button>
-            </form>
-            {
-                isAdmin && <Link href="/updateUser">Update User</Link>
-            }
+            <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6 mt-6">
+                <form onSubmit={updateFunFact} className="space-y-4">
+                    <input
+                        className="border border-gray-300 rounded-lg p-2 w-full"
+                        type="text"
+                        value={inputFact}
+                        onChange={(e) => setInputFact(e.target.value)}
+                        placeholder="Update Fun Fact"
+                        required
+                    />
+                    <button 
+                        type="submit"
+                        className="w-full bg-blue-500 text-white rounded-lg py-2 hover:bg-blue-600 transition duration-200"
+                    >
+                        Update Fun Fact
+                    </button>
+                </form>
+            </div>
+
+            <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6 mt-6">
+                <form onSubmit={newPassword} className="space-y-4">
+                    <input
+                        className="border border-gray-300 rounded-lg p-2 w-full"
+                        type="password"
+                        onChange={(e) => setInputPassword(e.target.value)}
+                        placeholder="New Password"
+                        required
+                    />
+                    <input
+                        className="border border-gray-300 rounded-lg p-2 w-full"
+                        type="password"
+                        onChange={(e) => setInputPassword1(e.target.value)}
+                        placeholder="Confirm New Password"
+                        required
+                    />
+                    <button 
+                        type="submit"
+                        className="w-full bg-blue-500 text-white rounded-lg py-2 hover:bg-blue-600 transition duration-200"
+                    >
+                        Change Password
+                    </button>
+                </form>
+            </div>
+
+            {isAdmin && (
+                <div className="w-full max-w-md mt-6">
+                    <Link href="/updateUser" className="w-full text-center bg-green-500 text-white rounded-lg py-2 block hover:bg-green-600 transition duration-200">
+                        Update User
+                    </Link>
+                </div>
+            )}
         </main>
     );
 };

@@ -24,6 +24,10 @@ const UpdateUser = () => {
   const [description, setDescription] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  // for event subfolders
+  const [subfolders, setSubfolders] = useState<string[]>([]);
+  const [selectedSubfolder, setSelectedSubfolder] = useState<string>('');
+
 
   // check if user is admin
   useEffect(() => {
@@ -66,6 +70,24 @@ const UpdateUser = () => {
 
     checkAdminStatus();
   }, []); // run only once
+
+  // fetch event subfolders
+  useEffect(() => {
+    const fetchSubfolders = async () => {
+      try {
+        const response = await fetch('/api/getEventSubfolders');
+        const data = await response.json();
+        //console.log('Subfolders:', data);
+        setSubfolders(data);
+        if (data.length > 0) {
+          setSelectedSubfolder(data[0]); // set the first subfolder as default
+        }
+      } catch (error) {
+        console.error('Error fetching subfolders:', error);
+      }
+    };
+    fetchSubfolders();
+  }, []);
 
   // image change handler
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -169,6 +191,41 @@ const UpdateUser = () => {
       alert("Please provide both a user ID and a profile picture.");
     }
   };
+
+  // upload event pics
+  const handleUploadPic = async (event: FormEvent) => {
+    event.preventDefault();
+    if (image && selectedSubfolder) {
+      const formData = new FormData();
+      formData.append('subfolder', selectedSubfolder);
+      formData.append('image', image);
+  
+      try {
+        if (!user){ return <h1>Please login</h1>;} 
+        const token = await user.getIdToken();
+        const response = await fetch('/api/postEventPic', {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+        });
+  
+        const result = await response.json();
+        if (response.ok) {
+          alert(result.message);
+        } else {
+          alert(`Failed to upload image: ${result.message}`);
+        }
+      } catch (error) {
+        console.error('Error uploading image:', error);
+        alert('Failed to upload image');
+      }
+    } else {
+      alert('Please provide both a subfolder and an image.');
+    }
+  };
+
   // upload posts
   const handleUploadPosts = async (event: FormEvent) => {
     event.preventDefault();
@@ -199,28 +256,6 @@ const UpdateUser = () => {
       setError((error as Error).message);
     }
   };
-  // get event folders/ids
-  const getFolders = async () => {
-    try {
-      const response = await fetch('/api/getEvents', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-      );
-      const data = await response.json();
-      if (response.ok) {
-        return data.folders;
-      } else {
-        throw new Error(data.error || 'Failed to fetch folders');
-      }
-    } catch (error) {
-      console.error('Error fetching folders:', error);
-      return [];
-    }
-  };
-  console.log(getFolders());
 
   if (loading) {
     return <h1>Loading...</h1>;
@@ -233,119 +268,147 @@ const UpdateUser = () => {
   }
 
   return (
-    <>
-        <form className="" onSubmit={handleUploadPosts}>
-          <h1 className="mb-3 text-2xl font-semibold">Create Post</h1>
-          <label htmlFor="title">Title
+    <main className="flex flex-col items-center min-h-screen bg-gradient-to-r from-[#A5CACE] to-[#4FC0A0] p-10 space-y-10">
+        {/* Upload event picture */}
+        <div className="w-full max-w-xl bg-white rounded-lg shadow-md p-6 space-y-6">
+          <form onSubmit={handleUploadPic} className="space-y-4">
+            <h1 className="mb-3 text-2xl font-semibold text-center">Upload Event Picture</h1>
+            <div className="space-y-2">
+              <label htmlFor="subfolder" className="block text-gray-700 font-semibold">Select Event Subfolder</label>
+              <select
+                className="border border-gray-300 rounded-lg p-2 w-full"
+                id="subfolder"
+                value={selectedSubfolder}
+                onChange={(e) => setSelectedSubfolder(e.target.value)}
+                required
+              >
+                <option value="">Select a subfolder</option>
+                {subfolders.map((folder) => (
+                  <option key={folder} value={folder}>
+                    {folder}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="picture" className="block text-gray-700 font-semibold">Select Picture</label>
+              <input
+                className="border border-gray-300 rounded-lg p-2 w-full"
+                type="file"
+                id="picture"
+                onChange={handleImageChange}
+                required
+              />
+            </div>
+            <button type="submit" className="w-full bg-blue-500 text-white rounded-lg py-2 hover:bg-blue-600 transition duration-200">
+              Upload Picture
+            </button>
+          </form>
+        </div>
+      {/* Upload post */}
+      <div className="w-full max-w-xl bg-white rounded-lg shadow-md p-6 space-y-6">
+        <form onSubmit={handleUploadPosts} className="space-y-4">
+          <h1 className="mb-3 text-2xl font-semibold text-center">Create Post</h1>
+          <div className="space-y-2">
+            <label htmlFor="title" className="block text-gray-700 font-semibold">Title</label>
             <input
-              className="border border-gray-300 rounded-lg p-2 text-black"
+              className="border border-gray-300 rounded-lg p-2 w-full"
               type="text"
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
-          </label>
-          <label htmlFor="post">Post
+          </div>
+          <div className="space-y-2">
+            <label htmlFor="post" className="block text-gray-700 font-semibold">Post</label>
             <textarea
               className="border border-gray-300 rounded-lg p-2 text-black w-full h-64 resize-none"
               id="post"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             ></textarea>
-          </label>
-        <button type="submit">Create Post</button>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        {success && <p style={{ color: 'green' }}>{success}</p>}
-      </form>
-
-      <form onSubmit={handleSubmitName}>
-        <h1 className={`mb-3 text-2xl font-semibold`}>
-          Update User DisplayName
-        </h1>
-        <label htmlFor="uid">
-          User ID:
-          <input
-            className="border border-gray-300 rounded-lg p-2 text-black"
-            type="text"
-            id="uid"
-            value={uid}
-            onChange={(e) => setUid(e.target.value)}
-            required
-          />
-        </label>
-        <label htmlFor="displayName">
-          Display Name:
-          <input
-            className="border border-gray-300 rounded-lg p-2 text-black"
-            type="text"
-            id="displayName"
-            value={displayName}
-            onChange={(e) => setDisplayName(e.target.value)}
-            required
-          />
-        </label>
-        <button
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          type="submit"
-        >
-          Update User
-        </button>
-      </form>
-
-      <form onSubmit={handleUpload}>
-        <h1 className={`mb-3 text-2xl font-semibold`}>
-          Update User ProfilePic
-        </h1>
-        <label htmlFor="uid">
-          User ID:
-          <input
-            className="border border-gray-300 rounded-lg p-2 text-black"
-            type="text"
-            id="uid"
-            value={uid}
-            onChange={(e) => setUid(e.target.value)}
-            required
-          />
-        </label>
-        <label htmlFor="profilePicture">
-          Profile Picture:
-          <input
-            className="border border-gray-300 rounded-lg p-2 text-black"
-            type="file"
-            id="profilePicture"
-            onChange={handleImageChange}
-            required
-          />
-        </label>
-        <button
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          type="submit"
-        >
-          Update User
-        </button>
-      </form>
-
-      <form onSubmit={setAdmin}>
-        <h1 className={`mb-3 text-2xl font-semibold`}>Set User as Admin</h1>
-        <label htmlFor="uid">
-          User ID:
-          <input
-            className="border border-gray-300 rounded-lg p-2 text-black"
-            type="text"
-            id="uid"
-            value={uid}
-            onChange={(e) => setUid(e.target.value)}
-            required
-          />
-        </label>
-        <button
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          type="submit"
-        >
-          Set Admin
-        </button>
-      </form>
-    </>
+          </div>
+          <button type="submit" className="w-full bg-blue-500 text-white rounded-lg py-2 hover:bg-blue-600 transition duration-200">Create Post</button>
+          {error && <p className="text-red-500">{error}</p>}
+          {success && <p className="text-green-500">{success}</p>}
+        </form>
+      </div>
+      {/* Update user display name */}
+      <div className="w-full max-w-xl bg-white rounded-lg shadow-md p-6 space-y-6">
+        <form onSubmit={handleSubmitName} className="space-y-4">
+          <h1 className="mb-3 text-2xl font-semibold text-center">Update User DisplayName</h1>
+          <div className="space-y-2">
+            <label htmlFor="uid" className="block text-gray-700 font-semibold">User ID</label>
+            <input
+              className="border border-gray-300 rounded-lg p-2 w-full"
+              type="text"
+              id="uid"
+              value={uid}
+              onChange={(e) => setUid(e.target.value)}
+              required
+            />
+          </div>
+          <div className="space-y-2">
+            <label htmlFor="displayName" className="block text-gray-700 font-semibold">Display Name</label>
+            <input
+              className="border border-gray-300 rounded-lg p-2 w-full"
+              type="text"
+              id="displayName"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              required
+            />
+          </div>
+          <button type="submit" className="w-full bg-blue-500 text-white rounded-lg py-2 hover:bg-blue-600 transition duration-200">Update User</button>
+        </form>
+      </div>
+      {/* Upload profile picture */}
+      <div className="w-full max-w-xl bg-white rounded-lg shadow-md p-6 space-y-6">
+        <form onSubmit={handleUpload} className="space-y-4">
+          <h1 className="mb-3 text-2xl font-semibold text-center">Update User ProfilePic</h1>
+          <div className="space-y-2">
+            <label htmlFor="uid" className="block text-gray-700 font-semibold">User ID</label>
+            <input
+              className="border border-gray-300 rounded-lg p-2 w-full"
+              type="text"
+              id="uid"
+              value={uid}
+              onChange={(e) => setUid(e.target.value)}
+              required
+            />
+          </div>
+          <div className="space-y-2">
+            <label htmlFor="profilePicture" className="block text-gray-700 font-semibold">Profile Picture</label>
+            <input
+              className="border border-gray-300 rounded-lg p-2 w-full"
+              type="file"
+              id="profilePicture"
+              onChange={handleImageChange}
+              required
+            />
+          </div>
+          <button type="submit" className="w-full bg-blue-500 text-white rounded-lg py-2 hover:bg-blue-600 transition duration-200">Update Profile Picture</button>
+        </form>
+      </div>
+      {/* Set user as admin */}
+      <div className="w-full max-w-xl bg-white rounded-lg shadow-md p-6 space-y-6">
+        <form onSubmit={setAdmin} className="space-y-4">
+          <h1 className="mb-3 text-2xl font-semibold text-center">Set User as Admin</h1>
+          <div className="space-y-2">
+            <label htmlFor="uid" className="block text-gray-700 font-semibold">User ID</label>
+            <input
+              className="border border-gray-300 rounded-lg p-2 w-full"
+              type="text"
+              id="uid"
+              value={uid}
+              onChange={(e) => setUid(e.target.value)}
+              required
+            />
+          </div>
+          <button type="submit" className="w-full bg-blue-500 text-white rounded-lg py-2 hover:bg-blue-600 transition duration-200">Set Admin</button>
+        </form>
+      </div>
+    </main>
   );
 };
 
