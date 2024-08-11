@@ -17,30 +17,44 @@ export async function POST(req: NextRequest) {
     // Parse form data
     const formData = await req.formData();
     const subfolder = formData.get('subfolder') as string;
-    const file = formData.get('image') as File;
 
-    if (!subfolder || !file) {
-      return NextResponse.json({ error: 'Subfolder and image are required' }, { status: 400 });
+    if (!subfolder) {
+      return NextResponse.json({ error: 'Subfolder is required' }, { status: 400 });
     }
 
-    // Convert the file to a buffer
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+    const filePromises: Promise<void>[] = [];
 
-    // Create a reference to the file in Firebase Storage
-    const bucket = storage.bucket("mottagningen-7063b.appspot.com");
-    const fileRef = bucket.file(`events/${subfolder}/${file.name}`);
+    // Iterate through the files in formData
+    formData.forEach((value, key) => {
+      if (key === 'image' && value instanceof File) {
+        const file = value;
 
-    // Upload the file to Firebase Storage
-    await fileRef.save(buffer, {
-      metadata: {
-        contentType: file.type,
-      },
+        // Handle the file as a promise
+        const uploadPromise = file.arrayBuffer().then(async (arrayBuffer) => {
+          const buffer = Buffer.from(arrayBuffer);
+
+          // Create a reference to the file in Firebase Storage
+          const bucket = storage.bucket("mottagningen-7063b.appspot.com");
+          const fileRef = bucket.file(`events/${subfolder}/${file.name}`);
+
+          // Upload the file to Firebase Storage
+          await fileRef.save(buffer, {
+            metadata: {
+              contentType: file.type,
+            },
+          });
+        });
+
+        filePromises.push(uploadPromise);
+      }
     });
 
-    return NextResponse.json({ message: 'Image uploaded successfully!' }, { status: 200 });
+    // Wait for all file uploads to complete
+    await Promise.all(filePromises);
+
+    return NextResponse.json({ message: 'Images uploaded successfully!' }, { status: 200 });
   } catch (error) {
-    console.error('Error uploading image:', error);
-    return NextResponse.json({ error: 'Failed to upload image' }, { status: 500 });
+    console.error('Error uploading images:', error);
+    return NextResponse.json({ error: 'Failed to upload images' }, { status: 500 });
   }
 }

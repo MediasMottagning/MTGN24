@@ -34,7 +34,7 @@ const Bandaren = () => {
   if (!user) return <h1>Please login</h1>;
 
   return (
-    <div className="">
+    <main className="flex min-h-screen min-w-80 flex-col items-center bg-gradient-to-r from-[#A5CACE] to-[#4FC0A0]">
       <div className="flex flex-wrap justify-center">
         {blandare.map((item, index) => (
           <button
@@ -47,7 +47,7 @@ const Bandaren = () => {
         ))}
       </div>
       <iframe src={src} width="100%" height="700px" allow="autoplay"></iframe>
-    </div>
+    </main>
   );
 };
 

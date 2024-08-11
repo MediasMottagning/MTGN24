@@ -24,9 +24,10 @@ const UpdateUser = () => {
   const [description, setDescription] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  // for event subfolders
+  // for event subfolders and uploading event pictures
   const [subfolders, setSubfolders] = useState<string[]>([]);
   const [selectedSubfolder, setSelectedSubfolder] = useState<string>('');
+  const [images, setImages] = useState<FileList | null>(null);
 
 
   // check if user is admin
@@ -95,6 +96,12 @@ const UpdateUser = () => {
       setImage(e.target.files[0]);
     }
   };
+  // image change handler (multiple images)
+  const handleImageChangeMultiple = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setImages(e.target.files);
+    }
+}
   // set user as admin
   const setAdmin = async (event: FormEvent) => {
     event.preventDefault();
@@ -191,38 +198,42 @@ const UpdateUser = () => {
       alert("Please provide both a user ID and a profile picture.");
     }
   };
-
+  
   // upload event pics
   const handleUploadPic = async (event: FormEvent) => {
     event.preventDefault();
-    if (image && selectedSubfolder) {
-      const formData = new FormData();
-      formData.append('subfolder', selectedSubfolder);
-      formData.append('image', image);
-  
-      try {
-        if (!user){ return <h1>Please login</h1>;} 
-        const token = await user.getIdToken();
-        const response = await fetch('/api/postEventPic', {
-          method: 'POST',
-          body: formData,
-          headers: {
-            'Authorization': `Bearer ${token}`
-          },
-        });
-  
-        const result = await response.json();
-        if (response.ok) {
-          alert(result.message);
-        } else {
-          alert(`Failed to upload image: ${result.message}`);
+    if (images && selectedSubfolder) {
+        const formData = new FormData();
+        formData.append('subfolder', selectedSubfolder);
+
+        // Append each selected file to the FormData
+        for (let i = 0; i < images.length; i++) {
+            formData.append('image', images[i]);
         }
-      } catch (error) {
-        console.error('Error uploading image:', error);
-        alert('Failed to upload image');
-      }
+
+        try {
+            if (!user){ return <h1>Please login</h1>;} 
+            const token = await user.getIdToken();
+            const response = await fetch('/api/postEventPic', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                alert(result.message);
+            } else {
+                alert(`Failed to upload image: ${result.message}`);
+            }
+        } catch (error) {
+            console.error('Error uploading images:', error);
+            alert('Failed to upload images');
+        }
     } else {
-      alert('Please provide both a subfolder and an image.');
+        alert('Please provide both a subfolder and images.');
     }
   };
 
@@ -272,6 +283,44 @@ const UpdateUser = () => {
         {/* Upload event picture */}
         <div className="w-full max-w-xl bg-white rounded-lg shadow-md p-6 space-y-6">
           <form onSubmit={handleUploadPic} className="space-y-4">
+            <h1 className="mb-3 text-2xl font-semibold text-center">Upload Event Pictures</h1>
+            <div className="space-y-2">
+              <label htmlFor="subfolder" className="block text-gray-700 font-semibold">Select Event Subfolder</label>
+              <select
+                className="border border-gray-300 rounded-lg p-2 w-full"
+                id="subfolder"
+                value={selectedSubfolder}
+                onChange={(e) => setSelectedSubfolder(e.target.value)}
+                required
+              >
+                <option value="">Select a subfolder</option>
+                {subfolders.map((folder) => (
+                  <option key={folder} value={folder}>
+                    {folder}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="pictures" className="block text-gray-700 font-semibold">Select Pictures</label>
+              <input
+                className="border border-gray-300 rounded-lg p-2 w-full"
+                type="file"
+                id="pictures"
+                onChange={handleImageChangeMultiple}
+                multiple
+                required
+              />
+            </div>
+            <button type="submit" className="w-full bg-blue-500 text-white rounded-lg py-2 hover:bg-blue-600 transition duration-200">
+              Upload Pictures
+            </button>
+          </form>
+        </div>
+
+        {/*
+          <div className="w-full max-w-xl bg-white rounded-lg shadow-md p-6 space-y-6">
+          <form onSubmit={handleUploadPic} className="space-y-4">
             <h1 className="mb-3 text-2xl font-semibold text-center">Upload Event Picture</h1>
             <div className="space-y-2">
               <label htmlFor="subfolder" className="block text-gray-700 font-semibold">Select Event Subfolder</label>
@@ -305,6 +354,7 @@ const UpdateUser = () => {
             </button>
           </form>
         </div>
+*/}
       {/* Upload post */}
       <div className="w-full max-w-xl bg-white rounded-lg shadow-md p-6 space-y-6">
         <form onSubmit={handleUploadPosts} className="space-y-4">
