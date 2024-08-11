@@ -3,6 +3,8 @@ import { useState, useEffect, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { getRedirectResult, signInWithEmailAndPassword, signInWithRedirect } from 'firebase/auth';
 import { auth, provider } from './lib/firebaseConfig'; 
+import TemplateHome from './components/TemplateHome';
+
 
 const generateEmailForUsername = (username: string): string => {
   return `${username}@mtgn.nu`;
@@ -48,14 +50,14 @@ const Home: React.FC = () => {
   };
 
   return (
-    <main className="min-h-screen flex flex-col bg-gradient-to-t to-[#A5CACE] from-[#4FC0A0]">
-        <div className="flex min-h-48 justify-center items-center"> {/* Top half */}
-          <p className='text-lg font-semibold text-white drop-shadow-md'>Välkommen till Mottagningen!</p>
-        </div>
+    <div className='relative'>
+      <div className='blur-sm'>
+        <TemplateHome />
+      </div>
 
-        <div className='flex flex-col items-center rounded-t-2xl grow pt-4 space-y-4 bg-white animate-fadeInFromBottom'> {/* Bottom half */}
-          <p className='text-2xl font-semibold bg-gradient-to-t to-[#A5CACE] from-[#4FC0A0] bg-clip-text text-transparent'>Logga in</p>
-        <form onSubmit={handleSignIn} className='flex flex-col space-y-2'>
+      <div className="absolute top-48 sm:top-80 inset-0 z-10 flex flex-col items-center rounded-t-2xl grow pt-10 sm:pt-16 space-y-4 border border-gray-50 bg-contain bg-repeat bg-[url('/white_plant_pattern.webp')] animate-fadeInFromBottom"> {/* Bottom half */}
+        <p className='text-xl sm:text-2xl font-semibold bg-gradient-to-t to-[#A5CACE] from-[#4FC0A0] bg-clip-text text-transparent drop-shadow-sm'>Välkommen till Mottagningen!</p>
+        <form onSubmit={handleSignIn} className='flex flex-col space-y-2 pt-4'>
           <input
             className="border border-gray-300 rounded-lg p-2 m-1"
             type="text"
@@ -77,7 +79,8 @@ const Home: React.FC = () => {
           </div>
         </form>
       </div>
-    </main>
+
+    </div>
   );
 };
 
