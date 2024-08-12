@@ -76,7 +76,7 @@ const Home: React.FC = () => {
             required
           />
           <div className="flex justify-center pt-4">
-            <button type="submit" disabled={isDisabled} className="drop-shadow-homeShadow w-2/3 text-white rounded-full py-3 bg-gradient-to-r from-[#A5CACE] to-[#4FC0A0]">Logga in</button>
+            <button type="submit" disabled={isDisabled} className="disabled:opacity-50 disabled:translate-y-1 drop-shadow-homeShadow w-2/3 text-white rounded-full py-3 bg-gradient-to-r from-[#A5CACE] to-[#4FC0A0]">Logga in</button>
           </div>
         </form>
       </div>
