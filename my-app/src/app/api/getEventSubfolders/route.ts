@@ -10,7 +10,11 @@ export async function GET(req: NextRequest, res: NextResponse) {
             .filter(file => file.name.endsWith('/')) // only keep folders
             .map(file => file.name.replace('events/', '').replace('/', '')); // remove 'events/' prefix and trailing '/'
         //console.log('subfolders:', subfolders);
-        return NextResponse.json(subfolders);
+        return NextResponse.json(subfolders, {
+            headers: {
+                'Cache-Control': 'no-store, max-age=0',
+            }
+        });
     } catch (error) {
         console.error('Error fetching events:', error);
         return NextResponse.json({ error: (error as Error).message }, { status: 500 });
