@@ -46,7 +46,7 @@ const EventPage = () => {
                 const data = await response.json();
                 setEventData(data);
                 setLoading(false);
-            } catch (error) {
+            } catch (error:any) {
                 console.error('Error fetching event data:', error);
                 setError(error.message);
                 setLoading(false);

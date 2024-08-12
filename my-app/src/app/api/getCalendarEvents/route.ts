@@ -65,11 +65,11 @@ export async function GET() {
 
             if (fileNameWithExt) {
                 const fileName = fileNameWithExt.split('.').slice(0, -1).join('.').toLowerCase().normalize("NFC"); // remove extension and convert to lowercase
-                eventPicsMap[fileName] = imageUrls[i] || null;            }            
+                eventPicsMap[fileName] = imageUrls[i] || "";            }            
         }
 
         // pair up the event with corresponding picture URLs and add them to items array of dictonaries
-        items = items.map(event => {
+        items = items.map((event: { location: string; }) => {
             const location = event.location?.toLowerCase(); // convert location to lowercase
             const pictureUrl = location ? eventPicsMap[location] : null;
             return {

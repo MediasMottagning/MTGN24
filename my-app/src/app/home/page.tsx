@@ -92,7 +92,7 @@ function formatDateTime(startTime: string, endTime: string): string {
 }
 
 
-export default function Home(request: NextRequest, response: NextResponse) {
+export default function Home() {
     // check if user is logged in
     const { user } = useAuth();
 

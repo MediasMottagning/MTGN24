@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { storage } from '../../lib/firebaseAdmin';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(req: NextApiRequest, res: NextApiResponse) {
+export async function GET(req: NextRequest, res: NextResponse) {
     try {
         const [files] = await storage.bucket("mottagningen-7063b.appspot.com").getFiles({ prefix: 'events/'});
         const subfolders = files

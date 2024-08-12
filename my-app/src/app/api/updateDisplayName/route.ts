@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
         'Content-Type': 'application/json',
       },
     });
-  } catch (error) {
+  } catch (error:any) {
     console.error('Error updating user:', error);
     return new NextResponse(JSON.stringify({ message: 'Error updating user', error: error.message }), {
       status: 500,
