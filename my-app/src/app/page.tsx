@@ -44,6 +44,7 @@ const Home: React.FC = () => {
       }
     } catch (error) {
       console.error("Error signing in: ", error);
+      alert("Inloggning misslyckades. \nKontrollera att du har skrivit användarnamn och lösenord rätt.");
     } finally {
       setIsDisabled(false);
     }
