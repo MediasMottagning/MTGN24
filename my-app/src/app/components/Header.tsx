@@ -57,6 +57,9 @@ export default function Header() {
                 <Link href="/calandar" className="block text-center" onClick={closeMenu}>Calendar</Link>
               </div>
               <div className="w-full px-4 py-2 hover:bg-gray-200">
+                <Link href="https://forms.gle/zDnjmj2kjuQdgNFd9" className="block text-center">På hjärtat-lådan ❤️</Link>
+              </div>
+              <div className="w-full px-4 py-2 hover:bg-gray-200">
                 <LogoutButton onClose={closeMenu} />
               </div>
             </div>
@@ -70,6 +73,7 @@ export default function Header() {
           <Link href="/phosare" className="text-gray-700 hover:text-blue-400 font-medium transition ease-in-out">Phösare</Link>
           <Link href="/blandaren" className="text-gray-700 hover:text-blue-400 font-medium transition ease-in-out">Bländare</Link>
           <Link href="/calandar" className="text-gray-700 hover:text-blue-400 font-medium transition ease-in-out">Kalender</Link>
+          <Link href="https://forms.gle/zDnjmj2kjuQdgNFd9" className="text-gray-700 hover:text-blue-400 font-medium transition ease-in-out">På hjärtat-lådan ❤️ 📫</Link>
           <LogoutButton/>
         </div>
         </>
