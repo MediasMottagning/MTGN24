@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { storage } from '../../lib/firebaseAdmin';
 
 
+export const dynamic = 'force-dynamic';
 export async function GET() {
     // Provide the required configuration
     const calendarId = process.env.GCAL_ID;
