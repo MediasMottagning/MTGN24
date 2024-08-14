@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { storage } from '../../lib/firebaseAdmin';
 import { NextRequest, NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
 export async function GET(req: NextRequest, res: NextResponse) {
     try {
         const [files] = await storage.bucket("mottagningen-7063b.appspot.com").getFiles({ prefix: 'events/'});
