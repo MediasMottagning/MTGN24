@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { getRedirectResult, signInWithEmailAndPassword, signInWithRedirect } from 'firebase/auth';
 import { auth, provider } from './lib/firebaseConfig'; 
 import TemplateHome from './components/TemplateHome';
+import useAuth from './components/useAuth';
 
 
 const generateEmailForUsername = (username: string): string => {
@@ -16,6 +17,14 @@ const Home: React.FC = () => {
   // TODO: ADD TIMER FOR LOGIN BUTTON
   const [isDisabled, setIsDisabled] = useState<boolean>(false);  // used for timeout on login button
   const router = useRouter();
+
+  const { user } = useAuth();
+  if (user) {
+    router.push("/home");
+  }
+  /*
+  If user is already logged in, redirect to home page. This should ideally be done in middleware.ts but I can't get it to work for some reason.
+  */
 
 
   const handleSignIn = async (event: FormEvent) => {
