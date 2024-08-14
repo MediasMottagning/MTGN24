@@ -36,8 +36,8 @@ export default function Header() {
         </button>
         {/* dropdown menu */}
         <div className={`absolute top-full right-0 w-full bg-white shadow-md z-10`}>
-          <div className={`transition-all delay-150 duration-200 overflow-hidden w-full ${isMenuOpen ? "max-h-[20rem]" : "max-h-0"}`}>
-            <div className="flex flex-col items-stretch">
+          <div className={`transition-all delay-150 duration-200 overflow-hidden w-full ${isMenuOpen ? "max-h-[22rem]" : "max-h-0"}`}>
+            <div className="flex flex-col">
               <div className="w-full px-4 py-2 hover:bg-gray-200">
                 <Link href="/profil" className="block text-center" onClick={closeMenu}>Profil</Link>
               </div>
@@ -59,7 +59,7 @@ export default function Header() {
               <div className="w-full px-4 py-2 hover:bg-gray-200">
                 <Link href="https://forms.gle/zDnjmj2kjuQdgNFd9" className="block text-center">På hjärtat-lådan ❤️</Link>
               </div>
-              <div className="w-full px-4 py-2 hover:bg-gray-200">
+              <div className="flex flex-col w-full px-4 py-2 mt-2 hover:bg-gray-200">
                 <LogoutButton onClose={closeMenu} />
               </div>
             </div>
