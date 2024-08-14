@@ -3,6 +3,8 @@ import { getDocs, collection } from 'firebase/firestore';
 import { db, auth } from '../../lib/firebaseAdmin';
 import { Post } from '../../lib/definitions';
 
+export const dynamic = 'force-dynamic';
+
 /* API endpoint for fetching posts */
 export async function GET(req: NextRequest) {
     const authHeader = req.headers.get('Authorization');
