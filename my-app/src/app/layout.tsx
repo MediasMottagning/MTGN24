@@ -5,6 +5,7 @@ import Header from "./components/Header";
 import { AuthProvider } from "./components/useAuth";
 import Footer from "./components/Footer";
 import { Analytics } from "@vercel/analytics/react"
+import FloatingButton from "./components/FloatingButton";
 
 const inter = Inter({ subsets: ["latin"] });
 const rubik = Rubik({ subsets: ["latin"] });
@@ -26,6 +27,7 @@ export default function RootLayout({
         <body className={"max-w-full " + rubik.className}>
           <Header />
           {children}
+          <FloatingButton/>
           <Footer/>
         </body>
       </html>

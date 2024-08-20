@@ -123,7 +123,7 @@ export default function PhosarGrupper() {
             <button onClick={() => toggleGroupBool(index, group)} className={`bg-white text-black font-normal text-xl mt-4 rounded-lg w-full py-4 whitespace-nowrap drop-shadow hover:bg-slate-200 ${group === "RSA" ? stardos.className : ''}`}>{group}
                 <div className='text-right pr-3 pb-3 h-2'>
                     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-                    {groupBool[index] ? <i className="material-symbols-outlined"></i> : <i className="material-symbols-outlined"></i>}
+                    {groupBool[index] ? <i className="material-symbols-outlined">arrow_drop_up</i> : <i className="material-symbols-outlined">arrow_drop_down</i>}
                 </div>
             </button>
             <div className={`transition-all delay-150 duration-200 overflow-hidden w-full ${groupBool[index] ? "max-h-[150rem]" : "max-h-0"}`}>

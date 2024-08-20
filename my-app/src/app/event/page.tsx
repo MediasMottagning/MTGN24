@@ -5,6 +5,8 @@ import { getAuth } from 'firebase/auth';
 import useAuth from '../components/useAuth';
 import Modal from '../components/Modal';
 import Link from 'next/link';
+import Image from 'next/image';
+import { set } from 'firebase/database';
 
 interface EventData {
     event: string;
@@ -16,6 +18,10 @@ export default function Event() {
     const [events, setEvents] = useState<EventData[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalImageUrl, setModalImageUrl] = useState<string>('');
+    const [modalImageUrls, setModalImageUrls] = useState<string[]>([]);
+    const [currentIndex, setCurrentIndex] = useState<number>(1); // Track the current image index
+
+
     const auth = getAuth();
 
     useEffect(() => {
@@ -41,14 +47,18 @@ export default function Event() {
         fetchEvents();
     }, [user]);
 
-    const openModal = (imageUrl: string) => {
+    const openModal = (imageUrl: string, imageUrls: string[], index: number) => {
         setModalImageUrl(imageUrl);
+        setModalImageUrls(imageUrls.slice(0, 4)); // only display the first 3 images
+        setCurrentIndex(index); // Set the index of the clicked image
         setIsModalOpen(true);
     };
+
 
     const closeModal = () => {
         setIsModalOpen(false);
         setModalImageUrl('');
+        setModalImageUrls([]);
     };
 
     if (!user) {
@@ -61,8 +71,15 @@ export default function Event() {
                 {events.map(event => (
                     <div className='w-full mb-8' key={event.event}>
                         <Link href={`/event/${event.event}`}>
-                            <h2 className='bg-white text-black font-medium text-center text-xl mt-4 rounded-lg py-4 whitespace-nowrap drop-shadow hover:bg-slate-200 w-full transition ease-in-out' style={{ cursor: 'pointer' }}>
-                                {event.event}
+                            <h2 className='relative flex items-center justify-center bg-white text-black font-medium text-center text-xl mt-4 rounded-lg py-4 whitespace-nowrap drop-shadow hover:bg-slate-200 w-full transition ease-in-out' style={{ cursor: 'pointer' }}>
+                                <span className='absolute left-4 flex items-center'>
+                                    {/* If you want to add something to the left, place it here */}
+                                </span>
+                                <span className='mx-auto'>{event.event}</span>
+                                <span className='absolute right-4 flex justify-center items-center text-xs font-normal'>
+                                    <Image className="pr-2" src="/eye.svg" alt="eye" width={30} height={30} />
+                                    Visa alla
+                                </span>
                             </h2>
                         </Link>
                         <div className="grid grid-cols-3 gap-4 lg:grid-cols-4 2xl:grid-cols-5">
@@ -71,7 +88,7 @@ export default function Event() {
                                     key={index} 
                                     src={url} 
                                     alt={`Event ${event.event} Image ${index + 1}`} 
-                                    onClick={() => openModal(url)}
+                                    onClick={() => openModal(url, event.imageUrls, index)} // Pass the correct index
                                     style={{ cursor: 'pointer' }} 
                                     className='object-cover h-20 w-full rounded-lg shadow-lg mt-2'
                                 />
@@ -80,7 +97,13 @@ export default function Event() {
                     </div>
                 ))}
             </div>
-            <Modal isOpen={isModalOpen} onClose={closeModal} imageUrl={modalImageUrl} />
+            <Modal 
+                isOpen={isModalOpen} 
+                onClose={closeModal} 
+                imageUrl={modalImageUrl} 
+                imageUrls={modalImageUrls} 
+                initialIndex={currentIndex+1} // Pass the initial index to the modal
+            />
         </main>
     );
 }
