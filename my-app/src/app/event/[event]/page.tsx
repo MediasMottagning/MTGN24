@@ -19,7 +19,10 @@ const EventPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalImageUrl, setModalImageUrl] = useState<string | null>(null);
+    const [modalImageUrl, setModalImageUrl] = useState<string | null>("");
+    const [modalImageUrls, setModalImageUrls] = useState<string[]>([]);
+    const [currentIndex, setCurrentIndex] = useState<number>(0); // Track the current image index
+
 
     useEffect(() => {
         if (!event) return;
@@ -57,14 +60,17 @@ const EventPage = () => {
         fetchEventData();
     }, [event, user]);
 
-    const openModal = (imageUrl: string) => {
+    const openModal = (imageUrl: string, imageUrls: string[], index: number) => {
         setModalImageUrl(imageUrl);
+        setModalImageUrls(imageUrls);
+        setCurrentIndex(index); // Set the index of the clicked image
         setIsModalOpen(true);
     };
 
     const closeModal = () => {
         setIsModalOpen(false);
-        setModalImageUrl(null);
+        setModalImageUrl('');
+        setModalImageUrls([]);
     };
 
     if (!user) {
@@ -97,21 +103,25 @@ const EventPage = () => {
                     </h1>
                 </div>
                 <div className="grid grid-cols-4 gap-4 lg:grid-cols-4 2xl:grid-cols-5 mt-4">
-                    {eventData.imageUrls.slice(1).map((url, index) => (
+                    {eventData.imageUrls.slice(1).map((url, index) => ( // only display the first 4 images
                         <img 
                             key={index} 
                             src={url} 
                             alt={`Event ${eventData.event} Image ${index + 1}`} 
-                            onClick={() => openModal(url)}
+                            onClick={() => openModal(url, eventData.imageUrls, index)} // Pass the correct index
                             style={{ cursor: 'pointer' }} 
-                            className='object-cover h-20 w-full rounded-lg shadow-lg'
+                            className='object-cover h-20 w-full rounded-lg shadow-lg mt-2'
                         />
                     ))}
                 </div>
             </div>
-            {modalImageUrl && (
-                <Modal isOpen={isModalOpen} onClose={closeModal} imageUrl={modalImageUrl} />
-            )}
+            <Modal 
+                isOpen={isModalOpen} 
+                onClose={closeModal} 
+                imageUrl={modalImageUrl} 
+                imageUrls={modalImageUrls} 
+                initialIndex={currentIndex+1} // Pass the initial index to the modal
+            />
         </main>
     );
 };

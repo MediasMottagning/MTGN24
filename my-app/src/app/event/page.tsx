@@ -6,6 +6,7 @@ import useAuth from '../components/useAuth';
 import Modal from '../components/Modal';
 import Link from 'next/link';
 import Image from 'next/image';
+import { set } from 'firebase/database';
 
 interface EventData {
     event: string;
@@ -17,6 +18,10 @@ export default function Event() {
     const [events, setEvents] = useState<EventData[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalImageUrl, setModalImageUrl] = useState<string>('');
+    const [modalImageUrls, setModalImageUrls] = useState<string[]>([]);
+    const [currentIndex, setCurrentIndex] = useState<number>(1); // Track the current image index
+
+
     const auth = getAuth();
 
     useEffect(() => {
@@ -42,14 +47,18 @@ export default function Event() {
         fetchEvents();
     }, [user]);
 
-    const openModal = (imageUrl: string) => {
+    const openModal = (imageUrl: string, imageUrls: string[], index: number) => {
         setModalImageUrl(imageUrl);
+        setModalImageUrls(imageUrls.slice(0, 4)); // only display the first 3 images
+        setCurrentIndex(index); // Set the index of the clicked image
         setIsModalOpen(true);
     };
+
 
     const closeModal = () => {
         setIsModalOpen(false);
         setModalImageUrl('');
+        setModalImageUrls([]);
     };
 
     if (!user) {
@@ -79,7 +88,7 @@ export default function Event() {
                                     key={index} 
                                     src={url} 
                                     alt={`Event ${event.event} Image ${index + 1}`} 
-                                    onClick={() => openModal(url)}
+                                    onClick={() => openModal(url, event.imageUrls, index)} // Pass the correct index
                                     style={{ cursor: 'pointer' }} 
                                     className='object-cover h-20 w-full rounded-lg shadow-lg mt-2'
                                 />
@@ -88,7 +97,13 @@ export default function Event() {
                     </div>
                 ))}
             </div>
-            <Modal isOpen={isModalOpen} onClose={closeModal} imageUrl={modalImageUrl} />
+            <Modal 
+                isOpen={isModalOpen} 
+                onClose={closeModal} 
+                imageUrl={modalImageUrl} 
+                imageUrls={modalImageUrls} 
+                initialIndex={currentIndex+1} // Pass the initial index to the modal
+            />
         </main>
     );
 }
