@@ -28,12 +28,13 @@ const EventPage = () => {
         }
         const fetchEventData = async () => {
             try {
+                const decodedEvent = Array.isArray(event) ? decodeURIComponent(event[0]) : decodeURIComponent(event);
                 const token = await user.getIdToken();
                 const response = await fetch('/api/getEventData', {
                     method: 'GET',
                     headers: {
                         "Authorization": `Bearer ${token}`,
-                        "Event": event.toString(),
+                        "Event": decodedEvent.toString(),
                     },
                 });
 

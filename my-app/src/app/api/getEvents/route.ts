@@ -14,6 +14,7 @@ export async function GET(req: NextRequest) {
         if (!decodedToken) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
+
         const bucket = storage.bucket("mottagningen-7063b.appspot.com");
         const options = {
             prefix: 'events/',
@@ -21,8 +22,8 @@ export async function GET(req: NextRequest) {
 
         const [files] = await bucket.getFiles(options);
 
-        // collect all event subfolders from "events" folder
-        const eventFolders = new Set();
+        // Collect all event subfolders from "events" folder
+        const eventFolders = new Set<string>();
         files.forEach(file => {
             const pathParts = file.name.split('/');
             if (pathParts.length > 2) {
@@ -30,17 +31,19 @@ export async function GET(req: NextRequest) {
             }
         });
 
-        //console.log('subfolders:', eventFolders);
+        // Generate a unique ID (can use a hash function, UUID, or base64 encoding)
+        const generateUniqueId = (folderName: string): string => {
+            // Simple base64 encoding for uniqueness (can be replaced with a more robust method)
+            return Buffer.from(folderName).toString('base64');
+        };
 
-        // fetch URLs for all images in each event folder
+        // Fetch URLs for all images in each event folder and pair with unique ID
         const eventPromises = Array.from(eventFolders).map(async (eventFolder) => {
             const eventOptions = {
                 prefix: `events/${eventFolder}/`,
             };
 
             const [eventFiles] = await bucket.getFiles(eventOptions);
-            // filter out first entry (which is the folder itself)
-            //const imageFiles = eventFiles.filter(file => !file.name.endsWith('/'));
 
             const eventImagePromises = eventFiles.map(file =>
                 file.getSignedUrl({
@@ -53,8 +56,9 @@ export async function GET(req: NextRequest) {
             const imageUrls = eventImageUrls.map(url => url[0]);
 
             return {
+                id: generateUniqueId(eventFolder), // Generate and return unique ID
                 event: eventFolder,
-                imageUrls
+                imageUrls,
             };
         });
 
