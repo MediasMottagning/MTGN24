@@ -5,6 +5,7 @@ import { getAuth } from 'firebase/auth';
 import useAuth from '../components/useAuth';
 import Modal from '../components/Modal';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface EventData {
     event: string;
@@ -61,8 +62,15 @@ export default function Event() {
                 {events.map(event => (
                     <div className='w-full mb-8' key={event.event}>
                         <Link href={`/event/${event.event}`}>
-                            <h2 className='bg-white text-black font-medium text-center text-xl mt-4 rounded-lg py-4 whitespace-nowrap drop-shadow hover:bg-slate-200 w-full transition ease-in-out' style={{ cursor: 'pointer' }}>
-                                {event.event}
+                            <h2 className='relative flex items-center justify-center bg-white text-black font-medium text-center text-xl mt-4 rounded-lg py-4 whitespace-nowrap drop-shadow hover:bg-slate-200 w-full transition ease-in-out' style={{ cursor: 'pointer' }}>
+                                <span className='absolute left-4 flex items-center'>
+                                    {/* If you want to add something to the left, place it here */}
+                                </span>
+                                <span className='mx-auto'>{event.event}</span>
+                                <span className='absolute right-4 flex justify-center items-center text-xs font-normal'>
+                                    <Image className="pr-2" src="/eye.svg" alt="eye" width={30} height={30} />
+                                    Visa alla
+                                </span>
                             </h2>
                         </Link>
                         <div className="grid grid-cols-3 gap-4 lg:grid-cols-4 2xl:grid-cols-5">
