@@ -92,7 +92,7 @@ const EventPage = () => {
     return (
         <main className="min-h-screen bg-gradient-to-r from-[#A5CACE] to-[#4FC0A0]">
             <div className='flex flex-col items-center mx-7 sm:mx-16 md:mx-32 lg:mx-64 xl:mx-96'>
-                <div className="flex w-full gap-4 mt-4">
+                <div className="flex w-full gap-4 mt-4"> 
                     <Link href="/event" className="w-1/3">
                         <h1 className='bg-white text-black font-medium text-center text-2xl rounded-lg py-4 whitespace-nowrap drop-shadow hover:bg-slate-200 transition ease-in-out' style={{ cursor: 'pointer' }}>
                             Tillbaka

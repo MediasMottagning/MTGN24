@@ -73,7 +73,7 @@ export default function Event() {
                         <Link href={`/event/${event.event}`}>
                             <h2 className='relative flex items-center justify-center bg-white text-black font-medium text-center text-xl mt-4 rounded-lg py-4 whitespace-nowrap drop-shadow hover:bg-slate-200 w-full transition ease-in-out' style={{ cursor: 'pointer' }}>
                                 <span className='absolute left-4 flex items-center'>
-                                    {/* If you want to add something to the left, place it here */}
+                                    {/* If you want to add something to the left, place it here */} 
                                 </span>
                                 <span className='mx-auto'>{event.event}</span>
                                 <span className='absolute right-4 flex justify-center items-center text-xs font-normal'>
