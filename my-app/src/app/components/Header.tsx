@@ -84,6 +84,15 @@ export default function Header() {
                 </div>
                 <div className="w-full px-4 py-2 hover:bg-gray-200">
                   <Link
+                    href="/video"
+                    className="block text-center"
+                    onClick={closeMenu}
+                  >
+                    Video
+                  </Link>
+                </div>
+                <div className="w-full px-4 py-2 hover:bg-gray-200">
+                  <Link
                     href="/n0llan"
                     className="block text-center"
                     onClick={closeMenu}
@@ -146,6 +155,12 @@ export default function Header() {
               className="text-gray-700 hover:text-blue-400 font-medium transition ease-in-out"
             >
               Galleri
+            </Link>
+            <Link
+              href="/video"
+              className="text-gray-700 hover:text-blue-400 font-medium transition ease-in-out"
+            >
+              Video
             </Link>
             <Link
               href="/n0llan"
